@@ -1,4 +1,4 @@
-# Iowa Liquor Sales: Example Project
+# Medicare Patients: Example Project
 
 This is a worked example of the BUSM 410 semester project. Use it to see what your repo should look like at each checkpoint.
 
@@ -7,7 +7,7 @@ This is a worked example of the BUSM 410 semester project. Use it to see what yo
 | **Team** | Instructor Example |
 | **Members** | Jake Bramwell |
 | **Canvas team** | Instructor (no team number) |
-| **Dataset** | `bigquery-public-data.iowa_liquor_sales` |
+| **Dataset** | `bigquery-public-data.cms_synthetic_patient_data_omop` (synthetic Medicare patient records) |
 | **Google Cloud project ID** | `cloud-services-example` |
 
 ## What's in this repo
