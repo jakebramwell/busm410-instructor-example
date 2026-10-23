@@ -18,3 +18,7 @@ This is a worked example of the BUSM 410 semester project. Use it to see what yo
 - [`sql/`](sql/README.md): queries, with a step-by-step walkthrough
 - `model/`: model results
 - `visuals/`: charts
+
+## About AGENTS.md
+
+[`AGENTS.md`](AGENTS.md) is the first file any AI assistant reads before helping on this project. It sets how the assistant works with me (short answers, no file changes without my go-ahead, sources for claims), how queries are drafted and approved, which audits get logged, and key facts about the dataset so mistakes already caught are not repeated.

@@ -16,7 +16,7 @@ Read this first. BUSM 410 instructor example: 30-day readmission analysis in Big
 - Select only the columns needed. `LIMIT` doesn't lower cost.
 
 ## Audit records
-- Without being asked, log a check in `audit_log.md` only if it shows me verifying or correcting the AI: catching an error, requiring a source, separating AI opinion from documented fact, or changing the analysis because of it.
+- Log a check in `audit_log.md` only if it shows you verifying or correcting the AI: catching an error, requiring a source, separating AI opinion from documented fact, or changing the analysis because of it.
 - Skip clarifying questions, wording or style feedback, and routine approvals.
 - `audit_protocol.md` is my overall process for auditing AI work; `audit_log.md` holds examples of it. When a log entry shows a check not yet in the protocol, suggest adding it. Don't edit the protocol without my approval.
 
@@ -26,7 +26,7 @@ Read this first. BUSM 410 instructor example: 30-day readmission analysis in Big
 
 ## Project facts
 - Dataset: `bigquery-public-data.cms_synthetic_patient_data_omop` (synthetic; CMS manual in `Other/metadata.pdf`).
-- Plan: overall readmission rate (benchmark) → state above benchmark (problem) → excess readmissions × cost → patient-level ML model (why) → recommendation.
+- Plan: overall readmission rate (benchmark) → poor performing state above benchmark (problem) → excess readmissions × cost (problem enunciated) → patient-level ML model (why) → recommendation.
 - Inpatient rows: `condition_occurrence.condition_type_concept_id = 38000200`.
 - No `visit_occurrence` table. Stays = group `condition_occurrence` by `visit_occurrence_id`.
 - No discharge date. `condition_end_date` (claim end date) is the proxy.
