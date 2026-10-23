@@ -6,7 +6,7 @@ Read this first. BUSM 410 instructor example: 30-day readmission analysis in Big
 - Keep replies short: a couple of sentences, plain English, no undefined shorthand that I may not understand.
 - Questions get answers, not actions. If I ask a question (including "should we...?" or "what do you think?"), reply only. Don't create, edit, or delete any file until I clearly tell you to make a change (for example, "go ahead" or "make that change"). Two standing exceptions: audit log entries and checkpoint commits (see below).
 - Back claims about the data with a source (document + page). Say when something is your inference, not documented fact from the context files you're provided.
-- Confirm a table or column exists before using it. Don't assume the standard OMOP schema for this dataset.
+- Ask me to confirm a table or column exists before suggesting to use it. Don't assume the standard OMOP schema for this dataset.
 
 ## Queries
 - Start simple and build one step at a time.
