@@ -12,13 +12,10 @@ This is a worked example of the BUSM 410 semester project. Use it to see what yo
 
 ## What's in this repo
 
-- `charter.md`: the gap write-up (CP1)
-- `audit_protocol.md`: the plan for checking AI-generated work (CP1)
-- `audit_log.md`: a running list of those checks (all semester)
-- [`sql/`](sql/README.md): queries, with a step-by-step walkthrough
 - `model/`: model results
+- [`sql/`](sql/README.md): queries, with a step-by-step walkthrough
 - `visuals/`: charts
-
-## About AGENTS.md
-
-[`AGENTS.md`](AGENTS.md) is the first file any AI assistant reads before helping on this project. It sets how the assistant works with me (short answers, no file changes without my go-ahead, sources for claims), how queries are drafted and approved, which audits get logged, and key facts about the dataset so mistakes already caught are not repeated.
+- `AGENTS.md`: instructions every AI assistant reads first
+- `audit_log.md`: a running list of those checks (all semester)
+- `audit_protocol.md`: the plan for checking AI-generated work (CP1)
+- `charter.md`: the gap write-up (CP1)
