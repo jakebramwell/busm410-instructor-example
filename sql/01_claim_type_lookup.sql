@@ -1,6 +1,4 @@
--- 01: Which claim types exist in condition_occurrence?
--- Result: 38000200 = Inpatient header, 38000230 = Outpatient header
--- Use 38000200 as the inpatient filter in later queries. (~2.4 GB scanned)
+-- Step 1: Find the inpatient claim type. See sql/README.md for notes.
 
 SELECT DISTINCT
   co.condition_type_concept_id,

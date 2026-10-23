@@ -28,7 +28,9 @@ Dataset: `bigquery-public-data.cms_synthetic_patient_data_omop`
 **Why:** Each row in `condition_occurrence` is one diagnosis. A readmission rate needs one row per stay, with an admit date and a discharge date.
 
 **Key notes:**
-- There is no discharge date in this dataset. `condition_end_date` is the best proxy, because the OMOP conversion filled it from the claim end date (`CLM_THRU_DT`).
+- Uses the inpatient filter from Step 1.
+- There is no discharge date in this dataset. `condition_end_date` is the best proxy, because the OMOP conversion (OHDSI ETL-CMS) filled it from the claim end date (`CLM_THRU_DT`), not the CMS discharge date (`NCH_BENE_DSCHRG_DT`), which was not carried over. Likewise, `condition_start_date` is the claim start date (`CLM_FROM_DT`).
 - When the readmission rate is built, a readmission must start at least 2 days after the prior claim ends. This keeps one long stay billed as two claims from counting as a readmission.
+- `LIMIT` does not reduce the cost; BigQuery bills for every column read across the whole table. Only the columns the problem needs are selected.
 
 **Result:** Pending.
