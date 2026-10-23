@@ -18,7 +18,7 @@ Read this first. BUSM 410 instructor example: 30-day readmission analysis in Big
 ## Audit records
 - Without being asked, log a check in `audit_log.md` only if it shows me verifying or correcting the AI: catching an error, requiring a source, separating AI opinion from documented fact, or changing the analysis because of it.
 - Skip clarifying questions, wording or style feedback, and routine approvals.
-- New rules or processes go in `audit_protocol.md`.
+- `audit_protocol.md` is my overall process for auditing AI work; `audit_log.md` holds examples of it. When a log entry shows a check not yet in the protocol, suggest adding it. Don't edit the protocol without my approval.
 
 ## Git
 - Commit checkpoints without asking. I run `git push origin main` myself.
