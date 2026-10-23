@@ -30,6 +30,6 @@ Read this first. BUSM 410 instructor example: 30-day readmission analysis in Big
 - Inpatient rows: `condition_occurrence.condition_type_concept_id = 38000200`.
 - No `visit_occurrence` table. Stays = group `condition_occurrence` by `visit_occurrence_id`.
 - No discharge date. `condition_end_date` (claim end date) is the proxy.
-- A readmission must start at least 2 days after the prior claim ends.
+- A readmission must start at least 2 days after the prior claim ends due to the lack of a dishcarge date variable.
 - State = patient's home state (`person.location_id` → `location.state`).
 - Don't analyze provider or care site IDs; CMS says they're random (manual, p. 15).
