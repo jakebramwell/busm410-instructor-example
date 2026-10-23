@@ -10,12 +10,14 @@ Read this first. BUSM 410 instructor example: 30-day readmission analysis in Big
 
 ## Queries
 - Start simple and build one step at a time.
-- Draft the query, I approve, then save it as `sql/NN_short_name.sql`.
-- SQL files get a one-line header only (`-- Step N: ... See sql/README.md for notes.`). All notes go in `sql/README.md` (purpose, cost, result, decision).
-- State the estimated scan cost. Select only the columns needed. `LIMIT` doesn't lower cost. No saved tables or views (decided).
+- Process: Draft the query, I approve, then save it as `sql/NN_short_name.sql`.
+- SQL files get a one-line header only (`-- Step N: ... See sql/README.md for notes.`). All notes go in `sql/README.md` (purpose, cost, result, decision...keep it brief).
+- Request the estimated scan cost from me provided by BigQuery SQL editor and add to `sql/README.md` as part of cost. 
+- Select only the columns needed. `LIMIT` doesn't lower cost.
 
 ## Audit records
-- Every time I check, question, or correct your work, add an entry to `audit_log.md` without being asked.
+- Without being asked, log a check in `audit_log.md` only if it shows me verifying or correcting the AI: catching an error, requiring a source, separating AI opinion from documented fact, or changing the analysis because of it.
+- Skip clarifying questions, wording or style feedback, and routine approvals.
 - New rules or processes go in `audit_protocol.md`.
 
 ## Git
