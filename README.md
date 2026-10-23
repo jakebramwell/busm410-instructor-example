@@ -15,6 +15,6 @@ This is a worked example of the BUSM 410 semester project. Use it to see what yo
 - `charter.md`: the gap write-up (CP1)
 - `audit_protocol.md`: the plan for checking AI-generated work (CP1)
 - `audit_log.md`: a running list of those checks (all semester)
-- `sql/`: queries
+- [`sql/`](sql/README.md): queries, with a step-by-step walkthrough
 - `model/`: model results
 - `visuals/`: charts
