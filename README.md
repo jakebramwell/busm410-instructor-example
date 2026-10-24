@@ -1,5 +1,7 @@
 # Medicare Patients: Example Project
 
+**Start here:** [`findings.md`](findings.md), the data story.
+
 This is a worked example of the BUSM 410 semester project. Use it to see what your repo should look like at each checkpoint.
 
 | | |
@@ -19,3 +21,4 @@ This is a worked example of the BUSM 410 semester project. Use it to see what yo
 - `audit_log.md`: a running list of those checks (all semester)
 - `audit_protocol.md`: the plan for checking AI-generated work (CP1)
 - `charter.md`: the gap write-up (CP1)
+- `findings.md`: the data story, with charts
