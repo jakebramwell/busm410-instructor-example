@@ -31,5 +31,6 @@ Read this first. BUSM 410 instructor example: 30-day readmission analysis in Big
 - No `visit_occurrence` table. Stays = group `condition_occurrence` by `visit_occurrence_id`.
 - No discharge date. `condition_end_date` (claim end date) is the proxy.
 - A readmission must start at least 2 days after the prior claim ends due to the lack of a dishcarge date variable.
+- Benchmark: 8.62% using Achievable Benchmarks of Care (ABC): pooled readmission rate of the lowest-rate states that together cover at least 10% of stays. Source: Kiefe et al., "Achievable benchmarks of care: the ABCs of benchmarking" (https://pubmed.ncbi.nlm.nih.gov/10461579/).
 - State = patient's home state (`person.location_id` → `location.state`).
 - Don't analyze provider or care site IDs; CMS says they're random (manual, p. 15).

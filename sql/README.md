@@ -44,4 +44,24 @@ Dataset: `bigquery-public-data.cms_synthetic_patient_data_omop`
 - `cost_per_readmit_usd` = $13,300 per readmission: HCUP 2011 Medicare figure ($24.0 billion / 1.8 million 30-day readmissions, hospital costs). No cost data for hospital stays exists in this dataset's `cost` table. 2011 is one year after the data ends. Source: [HCUP Statistical Brief #172](https://www.hcup-us.ahrq.gov/reports/statbriefs/sb172-Conditions-Readmissions-Payer.pdf).
 - `LIMIT` and `ORDER BY` were removed for the saved table: `LIMIT` doesn't lower cost, and saved tables don't keep row order.
 
-**Result:** Pending.
+**Result:** 1,322,931 inpatient stays saved to `stays_final`.
+
+## Step 3: Pivot the stays table in Connected Sheets
+
+**Query:** [`03_connected_sheets_source.sql`](03_connected_sheets_source.sql)
+**Cost:** a few MB per refresh (reads the small saved table, not the public dataset)
+
+**Why:** The state rates, benchmark, and excess cost were calculated with pivot tables in Google Sheets, not in SQL.
+
+**How:** The output of this query was connected to Google Sheets with Connected Sheets, and pivot tables were run with state in rows:
+- 30-day readmission rate: `AVERAGE` of `readmit_30`
+- Stays: `COUNTA` of `readmit_30`
+- Share of stays: `COUNTA` of `readmit_30`, shown as % of column total
+- The "54" row was excluded. It is not a state (most likely the CMS code for "Others").
+
+**Result:**
+- Overall rate: 9.16%. State rates range from 7.15% (UT) to 9.82% (MS).
+- Benchmark: 8.62%, using Achievable Benchmarks of Care (ABC): rank states from lowest rate, take the best states until they cover at least 10% of stays (15 states, 225,105 stays), and pool their rate. Source: Kiefe et al., [Achievable benchmarks of care: the ABCs of benchmarking](https://pubmed.ncbi.nlm.nih.gov/10461579/).
+- Texas: 9.61% on 90,016 stays. Total readmission cost about $115.1 million; excess vs. benchmark about 891 readmissions, $11.9 million.
+
+**Decision:** Use the ABC benchmark (8.62%). Texas is the problem state.
