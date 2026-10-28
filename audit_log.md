@@ -1,6 +1,10 @@
 # Audit Log
 
-Added to all semester, starting at CP1. Each entry is a time I checked work from my AI assistant (Claude) instead of accepting it as given.
+Added to all semester, starting at CP1. Entries 1–15 preserve Jake's original account of checking Claude. This review did not independently replay those events.
+
+For new entries, identify who performed the check, link the evidence, and state whether the issue is pending, agent-checked, human-reviewed, or student-reported. Use the compact format in [.agents/skills/project-audit/references/records.md](.agents/skills/project-audit/references/records.md). Do not treat a routine approval as validation.
+
+**Open historical evidence:** Entry 6 remains pending until its reconciliation result is supplied. Entry 8 establishes what was visible in a preview, not that every row or datetime field is empty. Entries 10 and 13 would be stronger with the exact conversion-code version and line links. Preserve these original entries and add dated resolutions when evidence becomes available.
 
 | # | Date | What the AI said or did | How I checked it | Result |
 |---|---|---|---|---|

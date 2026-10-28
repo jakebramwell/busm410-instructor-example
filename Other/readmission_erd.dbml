@@ -16,8 +16,8 @@ Table condition_occurrence {
   person_id integer
   visit_occurrence_id integer [note: 'Groups rows into one stay']
   condition_type_concept_id integer [note: 'Inpatient vs. outpatient claim']
-  condition_start_date date [note: 'Admission']
-  condition_end_date date [note: 'Discharge']
+  condition_start_date date [note: 'Claim start date; admission proxy']
+  condition_end_date date [note: 'Claim end date; discharge proxy']
 }
 
 Table concept {
@@ -30,13 +30,10 @@ Table death {
   death_date date
 }
 
-Table cost {
-  cost_event_id integer [note: 'Matches visit_occurrence_id']
-  total_paid float
-}
-
 Ref: person.location_id > location.location_id
 Ref: condition_occurrence.person_id > person.person_id
 Ref: condition_occurrence.condition_type_concept_id > concept.concept_id
 Ref: death.person_id - person.person_id
-Ref: cost.cost_event_id <> condition_occurrence.visit_occurrence_id
+
+// The cost table is omitted: the project audit found no inpatient payments loaded there.
+// See audit_log.md entry 13. ERD_problem.pdf preserves the earlier diagram and is outdated.

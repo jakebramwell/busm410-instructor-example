@@ -1,6 +1,8 @@
 # AGENTS.md
 
-Read this first. BUSM 410 instructor example: 30-day readmission analysis in BigQuery, built with an AI assistant.
+Read this first. BUSM 410 instructor example: readmission analysis in BigQuery, built with an AI assistant.
+
+For ongoing project work, load [.agents/skills/project-audit/SKILL.md](.agents/skills/project-audit/SKILL.md) and follow it when maintaining audit records. This is a repository instruction; verify that the chosen agent actually loads it.
 
 ## How to work with me
 - Keep replies short: a couple of sentences, plain English, no undefined shorthand that I may not understand.
@@ -16,9 +18,10 @@ Read this first. BUSM 410 instructor example: 30-day readmission analysis in Big
 - Select only the columns needed. `LIMIT` doesn't lower cost.
 
 ## Audit records
-- Log a check in `audit_log.md` only if it shows you verifying or correcting the AI: catching an error, requiring a source, separating AI opinion from documented fact, or changing the analysis because of it.
+- Log meaningful checks in `audit_log.md`: catching an error, requiring and checking a source, separating AI opinion from documented fact, or changing the analysis because of a check. Agent-run checks can be recorded when consequential, clearly labeled as agent work with human review pending.
 - Skip clarifying questions, wording or style feedback, and routine approvals.
-- `audit_protocol.md` is my overall process for auditing AI work; `audit_log.md` holds examples of it. When a log entry shows a check not yet in the protocol, suggest adding it. Don't edit the protocol without my approval.
+- Identify who performed each check. Never describe an agent check as my check or a proposed check as completed. Preserve pending issues and link later resolutions.
+- `audit_protocol.md` is my overall process for working with and auditing the agent; `audit_log.md` holds examples of it. When a log entry shows a check not yet in the protocol, suggest adding it. Don't edit the protocol without my approval.
 
 ## Git
 - Commit checkpoints without asking. I run `git push origin main` myself.
@@ -26,11 +29,14 @@ Read this first. BUSM 410 instructor example: 30-day readmission analysis in Big
 
 ## Project facts
 - Dataset: `bigquery-public-data.cms_synthetic_patient_data_omop` (synthetic; CMS manual in `Other/metadata.pdf`).
-- Plan: overall readmission rate (benchmark) → poor performing state above benchmark (problem) → excess readmissions × cost (problem enunciated) → patient-level ML model (why) → recommendation.
+- Plan: describe the synthetic-data gap → validate definitions and calculations → compare a patient-risk model with a simple baseline → recommend a supported next step. Prediction does not prove causation. Excess events against a reference are not automatically preventable events.
 - Inpatient rows: `condition_occurrence.condition_type_concept_id = 38000200`.
-- No `visit_occurrence` table. Stays = group `condition_occurrence` by `visit_occurrence_id`.
-- No discharge date. `condition_end_date` (claim end date) is the proxy.
-- A readmission must start at least 2 days after the prior claim ends due to the lack of a dishcarge date variable.
-- Benchmark: 8.62% using Achievable Benchmarks of Care (ABC): pooled readmission rate of the lowest-rate states that together cover at least 10% of stays. Source: Kiefe et al., "Achievable benchmarks of care: the ABCs of benchmarking" (https://pubmed.ncbi.nlm.nih.gov/10461579/).
+- No `visit_occurrence` table. Stays = group `condition_occurrence` by `(person_id, visit_occurrence_id)`.
+- Dates: `condition_start_date` and `condition_end_date` are claim-date proxies. The current SQL calls them `admit_date` and `discharge_date`; those aliases do not establish clinical admission/discharge dates.
+- Current project definition: the immediately next stay starts 2–30 days after the prior claim ends, with the query's death and follow-up filters. The 2-day rule is an assumption to validate; it does not prove that split claims or transfers have been resolved.
+- Reference: 8.62%, from a raw state-ranking adaptation inspired by Achievable Benchmarks of Care. Select whole states in ascending rate order until they first cover at least 10% of eligible stays, then pool their readmissions/stays. The reviewed Sheet has 19,412 / 225,105. This does not implement the paper's small-sample ranking adjustment. Source: Weissman et al., "Achievable benchmarks of care: the ABCs of benchmarking" (https://pubmed.ncbi.nlm.nih.gov/10461579/).
 - State = patient's home state (`person.location_id` → `location.state`).
 - Don't analyze provider or care site IDs; CMS says they're random (manual, p. 15).
+- The project is a synthetic-data teaching example. Do not infer actual state or provider performance, clinical causes, or intervention savings.
+- Source documentation and project-specific field/definition notes belong in `sql/README.md`; do not recreate the full CMS manual.
+- This instructor example has one human author. Never invent a second student, review, model result, or completed audit.
