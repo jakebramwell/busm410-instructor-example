@@ -5,20 +5,26 @@ description: Maintain a student's audit protocol and log during AI-assisted anal
 
 # Project Audit
 
-Read the project's working instructions in [AGENTS.md](../../../AGENTS.md), then its audit protocol and latest log entries. Use the existing filenames and format.
+At the start of a work session, read [AGENTS.md](../../../AGENTS.md), [Other/audit_protocol.md](../../../Other/audit_protocol.md), and the latest entries in [Other/audit_log.md](../../../Other/audit_log.md).
 
-## Keep the human's checks visible
+## Use Other/audit_protocol.md
 
-Record meaningful occasions when the human checks the agent: questioning a source, verifying a schema or calculation, rejecting an assumption, or correcting an interpretation. Confirmed correct work can count too. Skip routine approvals, wording feedback, and ordinary clarification.
+This file describes the student's process for working with and checking the agent. Read it before continuing the project so your work supports those checks, such as explaining sources and letting the student review a query before using it.
 
-The log is evidence of **the human auditing the agent**. Do not add the agent's own checks, checks of human work, or background tests as standalone entries. The agent's response may resolve an issue the human raised; describe that response without pretending the human performed a check they did not perform.
+When a meaningful human check introduces a useful practice not yet in the protocol, propose one short addition. Get the student's approval before editing the protocol. Do not turn every interaction into a new rule or rewrite the agreed process on your own.
 
-Use the entry format and scope rules in AGENTS.md. Keep entries short and name the actual check, result, and any available source or query link. If the human reports a check performed elsewhere, say so when evidence is unavailable. A source request does not prove the source was checked. A preview does not prove a whole-column property.
+## Maintain Other/audit_log.md
 
-Do not invent reviews, results, dates, sources, or a second student. Keep an unresolved human-raised issue pending. Use the next unused entry number, and preserve historical entries when adding a later resolution.
+This file is evidence of **the human auditing the agent**. As the project unfolds, record meaningful human checks: checking a source, verifying a schema or calculation, challenging an assumption, or correcting an interpretation. Confirmed correct work can count too.
 
-## Maintain the protocol
+Skip routine approvals, wording feedback, ordinary clarification, the agent's own checks, and checks of human work. The agent can write the record, but the human must have made the check. The agent's response may resolve an issue the human raised; describe that response without pretending the human did work they did not do.
 
-The protocol describes the student's process; the log gives examples. When a meaningful human check introduces a useful new practice, propose one short addition to the protocol. Follow the project's approval rule before editing it. Do not turn every interaction into a new rule.
+Before adding an entry, read the relevant earlier entries to avoid duplicates and find the next unused number. Append to the existing table using its five columns: entry number, date, what the agent said or did, how the human checked it, and the result. Keep entries short and add source or query links when available. Record a qualifying check without waiting for a separate request to log it.
+
+Do not invent reviews, results, dates, sources, or a second student. If the human reports a check performed elsewhere and evidence is unavailable, say so. A source request does not prove the source was checked. A preview does not prove a whole-column property. Mark unresolved issues as pending.
+
+Preserve old entries and do not reuse removed numbers. When an issue is resolved later, add a dated resolution that references the earlier entry; do not erase what happened.
+
+## Scope
 
 For a new project, draft a short protocol from the student's stated working process and get agreement before presenting it as established practice. This skill does not authorize queries, spending, publishing, or unrelated edits.

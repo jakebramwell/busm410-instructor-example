@@ -23,10 +23,10 @@ The data is synthetic Medicare data from 2008–2010. These results describe thi
 | [Other/metadata.pdf](Other/metadata.pdf) | CMS documentation for the source data |
 | [Other/readmission_erd.dbml](Other/readmission_erd.dbml) | The table relationship diagram source |
 | [AGENTS.md](AGENTS.md) | Instructions and project facts for the agent |
-| [audit_protocol.md](audit_protocol.md) | How I work with and check the agent |
-| [audit_log.md](audit_log.md) | Examples of me checking and correcting the agent |
+| [Other/audit_protocol.md](Other/audit_protocol.md) | How I work with and check the agent |
+| [Other/audit_log.md](Other/audit_log.md) | Examples of me checking and correcting the agent |
 | [Audit skill](.agents/skills/project-audit/SKILL.md) | Instructions for the agent to maintain the audit records as we work |
-| [CLAUDE.md](CLAUDE.md) | Points Claude to the same working instructions |
+| [Other/CLAUDE.md](Other/CLAUDE.md) | Points Claude to the same working instructions |
 | [.gitignore](.gitignore) | Keeps local files and credentials out of GitHub |
 
 ## Check the numbers

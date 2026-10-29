@@ -18,12 +18,8 @@ Use the [project-audit skill](.agents/skills/project-audit/SKILL.md) to maintain
 - Select only the columns needed. `LIMIT` doesn't lower cost.
 
 ## Audit records
-- `audit_protocol.md` is my process for working with and checking the agent. `audit_log.md` gives examples of me doing that.
-- Log meaningful human checks: catching an error, checking a source, verifying a calculation, challenging an assumption, or correcting an interpretation. Confirmed correct work counts too.
-- Do not log the agent's own checks, checks of human work, routine approvals, or wording feedback. The agent can write the record, but the human must have made the check.
-- Keep the existing table format: entry number, date, what the agent said or did, how I checked it, and the result. Add source or query links when available. Say when an issue is still pending; do not invent evidence.
-- Preserve old entries. Add a dated resolution when evidence becomes available. Use the next unused number; do not reuse a removed number.
-- When a human check introduces a useful practice not yet in the protocol, suggest an addition. Don't edit the protocol without my approval.
+- [Other/audit_protocol.md](Other/audit_protocol.md) is my process for working with and checking the agent. [Other/audit_log.md](Other/audit_log.md) gives examples of me doing that.
+- Read the [project-audit skill](.agents/skills/project-audit/SKILL.md) at the start of a work session. Follow it to decide what belongs in the log, write entries, and propose protocol changes.
 
 ## Git
 - Commit checkpoints without asking on the authorized review branch. Do not merge into main or push without my instruction.
