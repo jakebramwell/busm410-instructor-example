@@ -1,24 +1,23 @@
 # Project Charter
 
-## Question and intended decision
+## The question
 
-Can a simple patient-risk model improve identification of stays followed by a readmission in this synthetic dataset, compared with a basic prediction rule?
+Where do recorded readmission rates exceed a lower-rate reference group, how large is the difference, and can a simple model help identify stays most likely to be followed by a readmission?
 
-**Proposed decision maker:** a care-management director considering which discharged patients to prioritize for follow-up. The project will demonstrate how to inform that decision. Real deployment would require real-world validation and evidence that the proposed follow-up helps.
+## The decision this project supports
 
-## Opportunity to investigate
+The intended reader is a care-management leader considering how to prioritize follow-up after patients leave the hospital. This project demonstrates the analysis that could inform that decision. Because the records are synthetic, an operational recommendation would require validation with suitable real data.
 
-The initial analysis identifies a higher readmission rate for stays by Texas residents than a pooled reference rate. The size and supporting calculations belong in [findings.md](findings.md). A higher rate alone does not establish avoidable readmissions or poor care.
+## Scope
 
-## Scope and success
+Use the public CMS synthetic patient dataset in BigQuery, covering 2008–2010. Reconstruct inpatient stays, compare rates by patient home state, and investigate the Texas difference. A stay is the unit counted; a person can contribute several stays.
 
-- Use public CMS synthetic data in BigQuery, covering 2008–2010.
-- Analyze reconstructed inpatient stays, grouped by patient and visit identifier. State means home state.
-- Compare one suitable model with a simple baseline on held-out data: observations kept separate from model development.
-- Recommend a next step supported by the model's measured value and limitations. A model that fails to improve the baseline is a valid finding.
-- Keep the complete workflow within the course's free-tier constraints.
-- Preserve evidence of human checks of AI-assisted work.
+## What success looks like
 
-**Human author:** Jake Bramwell. **AI assistance:** Claude; Codex for this review branch. Model details and unresolved design choices belong in [model/model_card.md](model/model_card.md).
+- A reader can trace the size of the difference to saved queries and calculations.
+- One suitable machine learning model is compared with a simple prediction rule on observations kept separate from model development.
+- The recommendation follows the evidence, including a recommendation to keep the simpler approach if the model adds little value.
+- The audit log shows actual human checks of AI-assisted work.
+- Students can repeat the work within the course's free-tier setup.
 
-This charter sets direction. It is not a second findings report. Record a material change in scope briefly, with its reason, rather than rewriting the original intent to match later results.
+Jake Bramwell owns the analysis and decisions. AI assistance is disclosed in the README. Results belong in [findings.md](findings.md); the model's design belongs in [model/model_card.md](model/model_card.md).

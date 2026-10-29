@@ -1,46 +1,47 @@
-# Medicare Readmissions: Instructor Example
+# Where Are Recorded Readmissions Higher?
 
-A worked BUSM 410 project using public BigQuery data and an AI assistant. **This is synthetic Medicare data for learning. Findings do not describe actual Texas patients or hospitals.**
+**A Medicare analytics portfolio project using BigQuery, Google Sheets, and an AI assistant.**
 
-**Start with [findings.md](findings.md)** for the data story. The project currently has descriptive findings; the machine learning stage is planned.
+This project investigates a difference in recorded hospital readmissions, measures its size, and prepares a model-based recommendation for a care-management leader. It demonstrates problem framing, SQL, analytical judgment, visualization, and human oversight of AI.
 
-| Item | Details |
+**Current stage:** descriptive analysis and reproducible comparison. The prediction model is the next project stage and has not been trained.
+
+## The finding
+
+In the synthetic records, stays by Texas residents have a **9.61%** readmission rate, compared with **8.62%** in the lower-rate reference group. The difference is about **10 additional recorded events per 1,000 stays**.
+
+![Texas, overall, and reference readmission rates](visuals/readmission_comparison.png)
+
+These are CMS synthetic records from 2008–2010. The comparison demonstrates a method; it does not measure actual Texas care quality or prove which readmissions could be prevented.
+
+## Explore the work
+
+| If you want to understand… | Start here |
 |---|---|
-| Human author | Jake Bramwell |
-| AI assistance | Claude for the original work; Codex for the repository review branch |
-| Dataset | `bigquery-public-data.cms_synthetic_patient_data_omop` |
-| Period | 2008–2010 |
-| Instructor's Cloud project | `cloud-services-example`; replace with your own project when reproducing |
-| Analysis workbook | [Medicare_410_Project](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?usp=sharing) |
+| The question and intended decision | [Project charter](charter.md) |
+| The evidence and recommendation | [Findings](findings.md) |
+| Where the numbers came from | [SQL and calculation guide](sql/README.md) |
+| The planned model and how it will be judged | [Model card](model/model_card.md) |
+| How the human checked the agent | [Audit log](audit_log.md), using the [audit protocol](audit_protocol.md) |
 
-## Where things belong
+## Check the result yourself
 
-| File or folder | Purpose |
-|---|---|
-| [charter.md](charter.md) | What we intend to investigate, for whom, and within what scope |
-| [findings.md](findings.md) | What we found, the supporting evidence, and the recommendation |
-| [sql/README.md](sql/README.md) | Run order, source notes, project definitions, and calculations |
-| `sql/` | Profiling, preparation, and analysis queries |
-| [model/model_card.md](model/model_card.md) | Model purpose, baseline, evaluation plan, results, and limits |
-| `model/` | Model training, evaluation, and scoring SQL when approved, plus model results |
-| `visuals/` | Charts and the instructions or files needed to reproduce them |
-| [audit_protocol.md](audit_protocol.md) | The student's process for working with and checking an agent |
-| [audit_log.md](audit_log.md) | Specific evidence of that process |
-| [AGENTS.md](AGENTS.md) | Working instructions for an agent |
-| [.agents/skills/project-audit/SKILL.md](.agents/skills/project-audit/SKILL.md) | Reusable instructions for maintaining audit records during normal project work |
-| `Other/` | Source documents and the earlier relationship diagram |
-| [review_proposal.md](review_proposal.md) | Instructor review and remaining decisions; not an additional student deliverable |
+Open [the analysis workbook](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?gid=1737753067#gid=1737753067), then select **Pivot Table 1**. Texas has 8,654 recorded readmissions across 90,016 stays.
 
-## Reproduce the work
+For a calculation that uses no Google resources, run this from the repository folder:
 
-1. Use your own BigQuery project. Create a `readmissions` dataset in the US location, matching the public dataset.
-2. Follow [sql/README.md](sql/README.md). Replace `cloud-services-example` in the saved queries with your project ID. Step 2 uses `CREATE TABLE` and needs a new destination table name on a repeat run.
-3. Check the estimated bytes before running. The existing notes report about 2.4 GB for Step 1 and 11 GB for Step 2; these are historical scan estimates, not a current cost guarantee.
-4. Use Step 3 as the Connected Sheets source. Follow the documented pivot and benchmark calculations. Viewing the shared workbook does not grant access to refresh the instructor's BigQuery project.
-5. Reconcile the eligible population, rates, and benchmark before regenerating charts. The confidence interval and chart-generation steps still need to be documented.
+```sh
+python3 scripts/reproduce.py
+```
 
-The course target is a full workflow within Google's free usage limits. Query processing, stored data, and the chosen model's training allowance must each fit that target. Current guidance: [BigQuery pricing](https://cloud.google.com/bigquery/pricing) and [sandbox limitations](https://docs.cloud.google.com/bigquery/docs/sandbox).
+It uses the saved state-level counts behind the chart and prints the rates, reference group, and Texas difference. [Chart source and regeneration instructions](visuals/README.md)
 
-## Contributions
+To rebuild from public data instead, follow the [BigQuery run guide](sql/README.md). The course target is Google's free usage tier; the complete cloud workflow still needs an account-level check, especially model training.
 
-This instructor example has one human author working with AI. It does not demonstrate two-student collaboration. In a student team, name both people, state what each built, and link one substantive review performed by each student. An AI co-author label does not demonstrate a second human's contribution.
+## Who did the work
+
+Jake Bramwell is the human author. Claude assisted the initial analysis; Codex developed the review branch, reproducible comparison, and audit workflow. The log identifies human reviews separately from agent checks.
+
+This is an instructor example with one human. Student teams should name each person's contribution and link a substantive review each performed.
+
+**Instructor review:** [What changed, why, and how to check it](review/guide.md). Working instructions for agents are in [AGENTS.md](AGENTS.md).

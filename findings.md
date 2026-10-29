@@ -1,53 +1,42 @@
-# Findings
+# Findings: A Readmission Difference to Investigate
 
-*CMS DE-SynPUF synthetic data, 2008–2010. This is a teaching demonstration. CMS cautions that altered relationships between variables limit real-world inference (User Manual, printed pp. 1–2 and 16).*
+**Recommendation:** validate the stay definition, then test whether a simple risk model improves follow-up prioritization. The current comparison identifies a useful question; it does not yet justify an intervention.
 
-## What the analysis shows
+## What we found
 
-Using the project's reconstructed-stay definition, stays by Texas residents have a higher recorded readmission rate than a pooled reference group. This identifies a pattern to investigate within the synthetic data. It does not establish that actual Texas hospitals perform poorly.
+The state comparison contains **1,313,758 reconstructed stays** and **120,503 recorded readmissions**. Its overall rate is **9.17%**. Texas accounts for 90,016 stays and has a higher recorded rate than the lower-rate reference group.
 
-The saved query produced **1,322,931 stays**, according to the original run notes. The connected state pivot contains **1,313,758 stays**, after excluding the row labeled `54`, with **120,503 recorded readmissions: 9.17%**. The earlier write-up reported 9.16%; these populations must be distinguished. The meaning of `54` still needs a source-backed confirmation.
-
-## How the reference rate is calculated
-
-Rank the 50 states plus DC from lowest to highest readmission rate. Include whole states until their cumulative share of **eligible stays** first reaches at least 10%. Pool the selected states' readmissions and stays.
-
-The 14 lowest-rate states cover 122,486 stays, or 9.32% of the state-pivot population. Adding California gives 15 states, 225,105 stays, and 19,412 readmissions. Their pooled rate is **8.6235%, displayed as 8.62%**. Including the full crossing state explains why the group covers 17.13% of stays.
-
-This is an **ABC-inspired reference rate**. The published Achievable Benchmarks of Care method also adjusts rankings for small provider samples; this project's raw state ranking does not implement that adjustment. The paper describes a patient-pool threshold; this project adapts it to stays. [Weissman et al., 1999](https://pubmed.ncbi.nlm.nih.gov/10461579/)
-
-## Texas comparison
-
-| Measure | Value |
+| Measure | Texas comparison |
 |---|---|
-| Eligible stays by Texas residents | 90,016 |
-| Recorded readmissions | 8,654 |
-| Readmission rate | 9.6138% |
-| Gap against the pooled reference | +0.9903 percentage points |
-| Difference in readmission counts at the reference rate | about 891 |
-| Illustrative cost equivalent | about $11.9 million |
+| Recorded readmissions / stays | 8,654 / 90,016 |
+| Texas readmission rate | 9.61% |
+| Pooled reference rate | 8.62% |
+| Difference | +0.99 percentage points |
+| Difference expressed per 1,000 stays | about 10 additional recorded events |
+| Count above the reference-rate expectation | about 891 events |
 
-The count is `8,654 − (90,016 × 19,412 / 225,105)`, or about 891.44. This is a comparison with a reference rate, not an estimate of preventable events.
+![Recorded readmission rates](visuals/readmission_comparison.png)
 
-The cost equivalent multiplies that difference by $13,300. That rounded assumption comes from the 2011 Medicare age-65+ totals in [HCUP Statistical Brief #172, Table 1](https://www.ncbi.nlm.nih.gov/books/NBK206781/table/sb172.t1/): $24.0 billion divided by 1.8 million readmissions. These are hospital costs, not insurer payments, marginal savings, or a measured intervention effect. The source year and age restriction also differ from this project's full cohort.
+The 891-event difference answers: **How many fewer recorded events would there be if these Texas stays had the reference group's rate?** It does not establish that those events were avoidable.
 
-These aggregate checks reproduce the visible Sheet calculations. They do not independently validate the source query's stay construction or outcome labels.
+## How we selected the reference group
 
-## Existing chart
+Rank states from lowest to highest recorded rate. Include whole states until their cumulative share first reaches 10% of all eligible stays, then pool their readmissions and stays.
 
-![Existing state comparison chart](visuals/texas_readmission_gap.png)
+The first 14 cover 9.32% of stays. Including California crosses the threshold, bringing the group to 15 states/DC and 17.13% of stays. The pooled rate is **19,412 ÷ 225,105 = 8.62%**. This is a stay-based adaptation inspired by Achievable Benchmarks of Care; it uses raw state rates rather than the published method's small-sample ranking adjustment. [Weissman et al., 1999](https://pubmed.ncbi.nlm.nih.gov/10461579/)
 
-The existing chart preserves the earlier presentation. Its benchmark label should say "ABC-inspired reference." Its confidence interval remains unverified, and its cost annotation should be read as the illustrative cost equivalent above. The workbook inputs were inspected without editing or refreshing the Sheet.
+## Why the size matters
 
-## Uncertainty and limitations
+Applying the project's $13,300 cost assumption to the 891-event difference gives an illustrative cost equivalent of about **$11.9 million**. The assumption is derived from 2011 Medicare age-65+ hospital-cost totals in [HCUP Statistical Brief #172, Table 1](https://www.ncbi.nlm.nih.gov/books/NBK206781/table/sb172.t1/). It illustrates scale; it is not measured savings or payments in this dataset.
 
-- The original gap interval of 0.77–1.21 percentage points is retained here as a historical result awaiting its formula and assumptions. Do not use it to claim the gap cannot be due to chance. Repeated stays by the same person, selection of the reference group, and synthetic-data limitations need consideration.
-- State is home state, not treatment location. Dates are claim-date proxies. The 2–30-day rule is a project definition, not a validated CMS readmission measure.
-- The current query checks only the immediately next stay. Review how it handles overlapping claims or a 0–1-day next stay followed by another qualifying stay within 30 days.
-- Source data are synthetic. Prediction and adjusted associations cannot establish causes of actual readmissions or prove that an intervention would work.
+## What we recommend next
 
-## Recommendation and next step
+First, check the reconstructed stays and outcome labels. Then compare a simple patient-risk model with a basic prediction rule, using the same follow-up capacity for both. If the model identifies more subsequent readmissions at that capacity, recommend further validation. If it does not, recommend the simpler rule. [Model plan](model/model_card.md)
 
-First validate the outcome definition and complete the calculation trail. Then test whether a simple risk model improves prioritization compared with a baseline. Use that result to recommend either further evaluation of the model or a simpler approach. A real care-management recommendation would need validation on suitable real data and a separate evaluation of the intervention.
+## What this evidence can support
 
-See [sql/README.md](sql/README.md) for the source and calculations, [model/model_card.md](model/model_card.md) for the proposed model, and [charter.md](charter.md) for scope.
+These CMS synthetic records are intended for training and development. CMS cautions that altered relationships limit inference about actual Medicare beneficiaries and providers. State means patient residence, and the dates are claim-date proxies. [CMS User Manual, printed pp. 1–2 and 16](https://www.cms.gov/Research-Statistics-Data-and-Systems/Downloadable-Public-Use-Files/SynPUFs/Downloads/SynPUF_DUG.pdf)
+
+The rates and chart can be reproduced from the saved aggregate counts. Source-stay validation, the prediction model, and a defensible uncertainty calculation remain unfinished. The new chart therefore reports the observed comparison without the original unverified confidence interval.
+
+[Reproduce the calculations](sql/README.md) · [Human and agent checks](audit_log.md)
