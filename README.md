@@ -1,47 +1,40 @@
-# Where Are Recorded Readmissions Higher?
+# Medicare Patients: Example Project
 
-**A Medicare analytics portfolio project using BigQuery, Google Sheets, and an AI assistant.**
+This is a worked example of the BUSM 410 semester project, using public data in BigQuery and an AI agent.
 
-This project investigates a difference in recorded hospital readmissions, measures its size, and prepares a model-based recommendation for a care-management leader. It demonstrates problem framing, SQL, analytical judgment, visualization, and human oversight of AI.
+## Problem framing
 
-**Current stage:** descriptive analysis and reproducible comparison. The prediction model is the next project stage and has not been trained.
+In this synthetic dataset, **90,016 hospital stays by Texas residents** were followed by a readmission **9.61%** of the time, compared with **8.62%** in the benchmark group. That difference works out to **about 891 additional recorded events** over three years. At an estimated $13,300 per readmission, that represents **about $11.9 million in hospital costs**.
 
-## The finding
+This gives us a gap to investigate. It does not tell us how many events could have been prevented or how much money an intervention would save. The next step is to use a model to help inform a recommendation.
 
-In the synthetic records, stays by Texas residents have a **9.61%** readmission rate, compared with **8.62%** in the lower-rate reference group. The difference is about **10 additional recorded events per 1,000 stays**.
-
-![Texas, overall, and reference readmission rates](visuals/readmission_comparison.png)
-
-These are CMS synthetic records from 2008–2010. The comparison demonstrates a method; it does not measure actual Texas care quality or prove which readmissions could be prevented.
+The data is synthetic Medicare data from 2008–2010. These results describe this dataset, not actual Texas patients or hospitals. The model has not been built yet.
 
 ## Explore the work
 
-| If you want to understand… | Start here |
+| File or link | What it's for |
 |---|---|
-| The question and intended decision | [Project charter](charter.md) |
-| The evidence and recommendation | [Findings](findings.md) |
-| Where the numbers came from | [SQL and calculation guide](sql/README.md) |
-| The planned model and how it will be judged | [Model card](model/model_card.md) |
-| How the human checked the agent | [Audit log](audit_log.md), using the [audit protocol](audit_protocol.md) |
+| [charter.md](charter.md) | The question, scope, and intended decision |
+| [findings.md](findings.md) | The data story, charts, and recommendation |
+| [Analysis workbook](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?usp=sharing) | Connected Sheets analysis; use Pivot Table 1 |
+| [sql/](sql/README.md) | Queries and short notes on how the numbers were produced |
+| [model/](model/notes.md) | Model work; the [model card](model/model_card.md) is a placeholder |
+| [visuals/](visuals/) | Charts |
+| [Other/metadata.pdf](Other/metadata.pdf) | CMS documentation for the source data |
+| [Other/readmission_erd.dbml](Other/readmission_erd.dbml) | The table relationship diagram source |
+| [AGENTS.md](AGENTS.md) | Instructions and project facts for the agent |
+| [audit_protocol.md](audit_protocol.md) | How I work with and check the agent |
+| [audit_log.md](audit_log.md) | Examples of me checking and correcting the agent |
+| [Audit skill](.agents/skills/project-audit/SKILL.md) | Instructions for the agent to maintain the audit records as we work |
+| [CLAUDE.md](CLAUDE.md) | Points Claude to the same working instructions |
+| [.gitignore](.gitignore) | Keeps local files and credentials out of GitHub |
 
-## Check the result yourself
+## Check the numbers
 
-Open [the analysis workbook](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?gid=1737753067#gid=1737753067), then select **Pivot Table 1**. Texas has 8,654 recorded readmissions across 90,016 stays.
+Open the analysis workbook listed above and select **Pivot Table 1**. Texas has 8,654 recorded readmissions across 90,016 stays. The benchmark pools 19,412 readmissions across 225,105 stays.
 
-For a calculation that uses no Google resources, run this from the repository folder:
-
-```sh
-python3 scripts/reproduce.py
-```
-
-It uses the saved state-level counts behind the chart and prints the rates, reference group, and Texas difference. [Chart source and regeneration instructions](visuals/README.md)
-
-To rebuild from public data instead, follow the [BigQuery run guide](sql/README.md). The course target is Google's free usage tier; the complete cloud workflow still needs an account-level check, especially model training.
+Use [sql/README.md](sql/README.md) to follow the queries in BigQuery. Replace the instructor's project ID, `cloud-services-example`, with your own before saving results.
 
 ## Who did the work
 
-Jake Bramwell is the human author. Claude assisted the initial analysis; Codex developed the review branch, reproducible comparison, and audit workflow. The log identifies human reviews separately from agent checks.
-
-This is an instructor example with one human. Student teams should name each person's contribution and link a substantive review each performed.
-
-**Instructor review:** [What changed, why, and how to check it](review/guide.md). Working instructions for agents are in [AGENTS.md](AGENTS.md).
+Jake Bramwell, working with an AI agent. The audit log shows how I checked the agent's work.

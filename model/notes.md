@@ -1,5 +1,3 @@
-# Model Work
+# Model
 
-Start with [model_card.md](model_card.md). It defines the proposed model, the comparison rules, and the evaluation plan.
-
-Training, evaluation, and scoring SQL will live here. No trained model or model results exist yet. Keep data preparation and descriptive analysis in `sql/`; model-specific SQL belongs in this folder.
+Model work goes here. The [model card](model_card.md) will explain the model and its results once it is built.

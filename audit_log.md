@@ -1,8 +1,6 @@
 # Audit Log
 
-Entries 1–15 preserve Jake's original account of checking Claude. New entries identify the actor, the evidence, and any review still pending. The [audit protocol](audit_protocol.md) describes the process; the [project-audit skill](.agents/skills/project-audit/SKILL.md) helps maintain the record.
-
-Historical entry 6 still needs its reconciliation output. Entry 8 describes a preview rather than a full-column check. Source-code links for entries 10 and 13 remain to be added. These original accounts have not been independently replayed.
+Added to all semester, starting at CP1. Each entry is a time I checked work from my AI agent instead of accepting it as given.
 
 | # | Date | What the AI said or did | How I checked it | Result |
 |---|---|---|---|---|
@@ -21,12 +19,5 @@ Historical entry 6 still needs its reconciliation output. Entry 8 describes a pr
 | 13 | 2026-10-23 | Planned to price the problem by joining the `cost` table to each inpatient stay. | Asked what exactly the AI planned to pull from `cost`, which made it check the conversion code instead of assuming. | **Caught an error.** The OMOP conversion (OHDSI ETL-CMS) only writes costs for prescription drugs and physician claim lines. Inpatient stay payments were never loaded into `cost`, so the original plan wouldn't work. |
 | 14 | 2026-10-23 | Called the pooled best-quartile rate a "standard best-practice benchmark." | Asked for a published source proving it's standard, so a healthcare analytics employer would accept it. | **Corrected an overclaim.** No source defines a best-quartile benchmark. The closest established methods are Achievable Benchmarks of Care (Allison, Kiefe & Weissman; pooled rate of top performers covering at least 10% of patients) and the CMS Hospital Value-Based Purchasing benchmark (mean of the top 10% of hospitals). Switched to a named, citable method. |
 | 15 | 2026-10-23 | Described the finding as "Texas patients are readmitted at 9.6%." | Pointed out the rate is calculated per inpatient stay, not per patient. | **Corrected the unit of analysis.** The finding now reads "hospital stays by Texas residents," which reflects both the stay-level rate and that state means home state, not hospital location. |
-
-## Audit 16 — October 28, 2026 — Reproduce the recorded comparison
-
-- **Student/actor:** Codex performed this check while developing Jake's review branch. Jake's review is pending.
-- **AI contribution checked:** The earlier presentation reported an 8.62% reference and about 891 excess recorded events for Texas. Its chart included a confidence interval whose derivation was not available.
-- **Check and evidence:** Saved the 51 state/DC count rows observed in the Sheet on October 27, then independently recalculated all rates and the cumulative-stay selection. The [input counts](visuals/state_counts_2026-10-27.csv), [reproduction script](scripts/reproduce.py), and [verification record](review/verification.md) preserve the evidence. The new SQL selection logic was checked locally against these counts; it was not executed in BigQuery.
-- **Outcome:** Reproduced 19,412 / 225,105 = 8.6235%, Texas 8,654 / 90,016 = 9.6138%, and a count difference of about 891.44. The [replacement chart](visuals/readmission_comparison.png) can be regenerated and omits the unverified interval. The original event counts were retained.
-- **Status:** Agent-checked; human review pending. This checks the saved aggregates, not the original claim-to-stay reconstruction, preventability, or the effectiveness of follow-up. Historical audit entry 6 remains pending.
-- **Protocol used:** Check consequential calculations and preserve evidence; separate a recorded difference from causal or savings claims; distinguish agent work from human review.
+| 17 | 2026-10-29 | Added its own calculation checks as audit entry 16. | I pointed out that this log should show the human auditing the agent, not the agent's own checks. | **Corrected the scope.** Removed entry 16 and changed the agent instructions and audit skill to log human checks only. |
+| 18 | 2026-10-29 | Described the gap as about 10 additional events per 1,000 stays without giving the number of Texas stays. | I pointed out that the rate alone did not show the size of the problem and asked for the population, extra events, and dollar estimate. | **Improved the problem framing.** The README now includes 90,016 Texas stays, about 891 additional recorded events, and about $11.9 million at the stated cost assumption. |

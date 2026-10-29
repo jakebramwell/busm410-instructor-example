@@ -1,30 +1,44 @@
-# Working Instructions
+# AGENTS.md
 
-This is Jake Bramwell's BUSM 410 instructor example, built with AI assistance. Start with [README.md](README.md), then load [.agents/skills/project-audit/SKILL.md](.agents/skills/project-audit/SKILL.md) when doing project work.
+Read this first. BUSM 410 instructor example: 30-day readmission analysis in BigQuery, built with an AI agent.
 
-## Communicate with context
+Use the [project-audit skill](.agents/skills/project-audit/SKILL.md) to maintain audit records while we work. Use SQL and Google Sheets; do not add Python files or Python setup.
 
-- Keep replies concise and use plain English. Explain a technical term when it first matters.
-- Give the purpose, the proposed or completed change, and how Jake can check it. Explain what an issue affects before giving a verdict.
-- A question is a request for an answer, not permission to edit. When Jake explicitly authorizes work on a branch, complete that scope without asking again for every file change.
+## How to work with me
+- Keep replies short and use my plain wording. Explain the context before giving feedback. Define technical terms when needed.
+- Questions get answers, not actions. If I ask a question (including "should we...?" or "what do you think?"), reply only. Don't create, edit, or delete any file until I clearly tell you to make a change (for example, "go ahead" or "make that change"). Two standing exceptions: audit log entries and checkpoint commits (see below).
+- Back claims about the data with a source (document + page). Say when something is your inference, not documented fact from the context files you're provided.
+- Ask me to confirm a table or column exists before suggesting to use it. Don't assume the standard OMOP schema for this dataset.
 
-## Work with the data
+## Queries
+- Start simple and build one step at a time.
+- Process: Draft the query, I approve, then save it as `sql/NN_short_name.sql`.
+- SQL files get a one-line header only (`-- Step N: ... See sql/README.md for notes.`). All notes go in `sql/README.md` (purpose, cost, result, decision...keep it brief).
+- Request the estimated scan cost from me provided by BigQuery SQL editor and add to `sql/README.md` as part of cost.
+- Select only the columns needed. `LIMIT` doesn't lower cost.
 
-- Use [sql/README.md](sql/README.md) for definitions, sources, run order, and known limits. Verify schemas before adding fields; do not assume a standard OMOP schema.
-- For new analytical work, draft a query and get approval before saving it unless the current instruction already authorizes implementing that work. Start simple, use only needed columns, and check estimated bytes before execution.
-- Use the one-line SQL header convention and keep explanations in `sql/README.md`. Model-specific SQL goes in `model/`.
-- Distinguish a locally tested calculation from an executed BigQuery job. Do not invent outputs, job IDs, model metrics, source links, or cost estimates.
-- These records are synthetic. Separate a recorded difference from preventability, causal care quality, and intervention savings.
+## Audit records
+- `audit_protocol.md` is my process for working with and checking the agent. `audit_log.md` gives examples of me doing that.
+- Log meaningful human checks: catching an error, checking a source, verifying a calculation, challenging an assumption, or correcting an interpretation. Confirmed correct work counts too.
+- Do not log the agent's own checks, checks of human work, routine approvals, or wording feedback. The agent can write the record, but the human must have made the check.
+- Keep the existing table format: entry number, date, what the agent said or did, how I checked it, and the result. Add source or query links when available. Say when an issue is still pending; do not invent evidence.
+- Preserve old entries. Add a dated resolution when evidence becomes available. Use the next unused number; do not reuse a removed number.
+- When a human check introduces a useful practice not yet in the protocol, suggest an addition. Don't edit the protocol without my approval.
 
-## Maintain audit evidence
+## Git
+- Commit checkpoints without asking on the authorized review branch. Do not merge into main or push without my instruction.
+- Reference documents go in `Other/`.
 
-- `audit_protocol.md` is the student's process for directing and checking an agent. `audit_log.md` holds actual examples.
-- Record meaningful checks as they occur. Identify the actor and evidence; label agent checks and student-reported checks accurately. Routine approvals and wording changes do not need entries.
-- Preserve historical entries and add dated resolutions for pending issues. Propose protocol additions when a new check reveals a useful practice; obtain approval before changing the protocol unless the current task already authorizes its revision.
-- Never invent a second student or certify human understanding from an agent's own work.
+## Project facts
+- Dataset: `bigquery-public-data.cms_synthetic_patient_data_omop` (synthetic; CMS manual in `Other/metadata.pdf`).
+- Plan: compare state rates → show the Texas gap and its size → use a patient-level model to inform the recommendation. A prediction model alone does not prove why the gap exists.
+- Inpatient rows: `condition_occurrence.condition_type_concept_id = 38000200`.
+- No `visit_occurrence` table. Several diagnosis rows can belong to one stay. Group `condition_occurrence` by `(person_id, visit_occurrence_id)` to count each stay once.
+- No discharge date. `condition_end_date` is the claim end date used as a stand-in. Claim start date is also used as a stand-in for admission.
+- The current readmission flag uses the immediately next stay starting 2–30 days after claim end. The 2-day minimum is a project assumption that still needs checking.
+- Benchmark: 8.62%, adapting the Achievable Benchmarks of Care idea: pool the lowest-rate whole states until their cumulative share first reaches at least 10% of eligible stays. This does not include the paper's small-group adjustment. Source: Weissman et al., "Achievable benchmarks of care: the ABCs of benchmarking" (https://pubmed.ncbi.nlm.nih.gov/10461579/).
+- State = patient's home state (`person.location_id` → `location.state`).
+- Don't analyze provider or care site IDs; CMS says they're random (manual, p. 15).
 
-## Save and review
-
-- Work on the authorized branch. Checkpoint commits are allowed. Do not merge or push without an explicit instruction.
-- Preserve unrelated local changes. Reference documents belong in `Other/`.
-- When changing code or calculations, run the relevant checks and report exactly what was verified and what remains unexecuted.
+- Texas: 90,016 stays, 8,654 recorded readmissions, about 891 events above the benchmark expectation. The $11.9 million cost estimate uses $13,300 per event; it is not an estimate of preventable events or savings.
+- These are synthetic records. Do not infer actual state or provider performance.

@@ -1,73 +1,74 @@
-# Reproduce the Readmission Comparison
+# sql
 
-The workflow has two starting points. **To check the published story**, use the saved counts; no Google account or cloud query is needed. **To rebuild from public records**, use the BigQuery steps below.
+Queries for the 30-day readmission analysis, in the order they were run. Each step lists what it does, what it found, and what was decided because of it.
 
-## Check the published story
+Dataset: `bigquery-public-data.cms_synthetic_patient_data_omop`
 
-Run `python3 scripts/reproduce.py` from the repository folder, or inspect **Pivot Table 1** in the [analysis workbook](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?gid=1737753067#gid=1737753067).
+## Step 1: Find the inpatient claim type
 
-| Calculation | Inputs | Result |
-|---|---|---|
-| State/DC population rate | 120,503 / 1,313,758 | 9.1724% |
-| Pooled reference rate | 19,412 / 225,105 | 8.6235% |
-| Texas rate | 8,654 / 90,016 | 9.6138% |
-| Texas difference | 8,654 − 90,016 × (19,412 / 225,105) | 891.44 events |
-| Illustrative cost equivalent | Unrounded difference × $13,300 | $11,856,180.17 |
+**Query:** [`01_claim_type_lookup.sql`](01_claim_type_lookup.sql)
+**Estimated data scanned:** about 2.4 GB
 
-Reference membership is based on **cumulative share of stays**, not number of states or share of readmissions. Start with the lowest-rate states, include whole states until the share first reaches 10%, then pool counts. Fixed row addresses in a Sheet are valid only while its order and membership stay unchanged.
+**Why:** `condition_occurrence` mixes inpatient and outpatient diagnoses. We need the ID that marks inpatient rows.
 
-## Rebuild in BigQuery
+**Result:**
 
-Use dataset `bigquery-public-data.cms_synthetic_patient_data_omop`. Create a destination dataset named `readmissions` in the US location. Replace `cloud-services-example` in the SQL files with your own project ID. Keep the original source table names unchanged.
-
-| Step | File | What you get | Execution status |
-|---|---|---|---|
-| 1 | [Claim-type lookup](01_claim_type_lookup.sql) | Confirms which code identifies inpatient rows | Original run documented; about 2.4 GB scanned |
-| 2 | [Reconstruct stays](02_inpatient_stays.sql) | Saves `readmissions.stays_final` | Original run documented; about 11 GB scanned |
-| 3 | [Connected Sheets source](03_connected_sheets_source.sql) | Three columns for the state pivot | Used in the original workbook |
-| 4 | [State comparison](04_state_comparison.sql) | Counts, selected reference group, rates, and differences | New; calculation logic checked locally, not executed in BigQuery |
-| 5 | [Saved-stay checks](05_check_saved_stays.sql) | Diagnostic counts to inspect before modeling | New; syntax checked, not executed in BigQuery |
-
-Run Step 5 after Step 2 and before interpreting Step 4. Step 3 is optional if using Step 4 directly. New scripts are saved for branch review under the instructor's authorization to develop this branch.
-
-Step 2 uses `CREATE TABLE`. On a repeat run, change the destination to a new table name and update the downstream references. Do not delete or replace a previous result just to make a rerun work.
-
-Check the estimated bytes in the BigQuery editor before each run. The historical estimates above are context, not a fresh estimate. Model training has its own pricing considerations. The full run has not been verified on a new student account. [Cost controls](https://docs.cloud.google.com/bigquery/docs/best-practices-costs) · [Current pricing](https://cloud.google.com/bigquery/pricing)
-
-## Understand Step 5's output
-
-`missing_stay_keys`, `missing_dates`, `negative_durations`, `invalid_readmission_flags`, `insufficient_follow_up_by_project_rule`, `death_on_or_before_claim_end`, `flags_inconsistent_with_rule`, and `duplicate_stay_keys` should be zero. Investigate any nonzero result before building a model.
-
-`saved_stays`, `state_54_stays`, and `missing_home_state` describe population size or exclusions; they are not automatically errors. The original saved-table count was 1,322,931, while the state pivot contains 1,313,758. Reconcile those 9,173 excluded stays. The meaning of code `54` is still unconfirmed; Step 4 explicitly includes the 50 state abbreviations plus DC instead of guessing that code's meaning.
-
-Passing these checks does not prove the outcome definition is clinically valid. In particular, the current next-stay rule needs a sensitivity check for overlapping or adjacent claims followed by another stay inside 30 days.
-
-## Definitions used in this project
-
-| Field or rule | Meaning |
+| condition_type_concept_id | concept_name |
 |---|---|
-| One stay | Inpatient diagnosis rows grouped by `(person_id, visit_occurrence_id)` |
-| Inpatient code | `condition_type_concept_id = 38000200`, from Step 1's recorded lookup |
-| `admit_date` | Minimum claim-start date, used as an admission proxy |
-| `discharge_date` | Maximum claim-end date, used as a discharge proxy |
-| Home state | `person.location_id` linked to `location.state` |
-| `readmit_30` | The immediately next stay starts 2–30 days later and is not after recorded death |
-| Eligible index stay | Recorded death is not on/before claim end; claim end is no later than 2010-12-01 |
-| Cost assumption | $13,300 per flagged readmission, otherwise zero; not a recorded payment |
+| 38000200 | Inpatient header - 1st position |
+| 38000230 | Outpatient header - 1st position |
 
-The 2-day minimum is a project assumption intended to reduce possible split-claim/transfer counts; it does not establish that those events have been resolved. A later death alone does not exclude a stay. A qualifying readmission before that death can still count.
+**Decision:** Filter all later queries with `condition_type_concept_id = 38000200`.
 
-## Sources and evidence
+## Step 2: Build the final stays table
 
-- [CMS User Manual](https://www.cms.gov/Research-Statistics-Data-and-Systems/Downloadable-Public-Use-Files/SynPUFs/Downloads/SynPUF_DUG.pdf), also [saved locally](../Other/metadata.pdf). Printed pp. 1–2 and 16 cover inferential limitations; pp. 14–15 cover synthesis and dates; p. 15 covers provider identifiers.
-- [Weissman et al., 1999](https://pubmed.ncbi.nlm.nih.gov/10461579/): the project adapts the patient-pool idea to stays and does not implement the paper's small-sample ranking adjustment.
-- [HCUP Statistical Brief #172, Table 1](https://www.ncbi.nlm.nih.gov/books/NBK206781/table/sb172.t1/): the rounded 2011 Medicare age-65+ hospital-cost totals behind $13,300. These are not marginal savings or payments.
-- [Current diagram source](../Other/readmission_erd.dbml). The [earlier PDF](../Other/ERD_problem.pdf) still contains a superseded cost relationship.
+**Query:** [`02_inpatient_stays.sql`](02_inpatient_stays.sql)
+**Estimated data scanned:** about 11 GB, run once. Saves the result as `cloud-services-example.readmissions.stays_final` (dataset location: US, to match the public dataset) for Connected Sheets.
 
-The CMS manual describes original files. The later OMOP conversion's exact date mapping and missing inpatient-cost mapping were reported in audit entries 10 and 13; exact conversion-code links remain to be added.
+**Why:** A readmission rate needs one row per inpatient stay with admission/discharge date stand-ins, the patient's home state, and a readmission flag.
 
-## Workbook trail
+**How it's built:**
+- `stays`: groups inpatient diagnosis rows into one row per `(person_id, visit_occurrence_id)`. This counts one stay instead of several diagnoses from the same stay.
+- `deaths`: one death date per patient, so the join can't duplicate stays.
+- `almost_there`: adds home state (`person.location_id` → `location.state`) and uses `LEAD()` to find each patient's next admit date and days until it.
+- `final`: adds the readmission flag, cost, and death filter.
 
-Observed October 27, 2026, without refresh or edits. `Pivot Table 1!J2` pools `F38:F52 / C38:C52`; `G3` calculates Texas excess using the unrounded reference; `J5` multiplies it by 13,300. The date-stamped CSV in `visuals/` preserves all 51 count rows used for reproduction.
+**Key notes:**
+- No discharge date exists in this dataset. `condition_end_date` is the stand-in used here: the OMOP conversion (OHDSI ETL-CMS) filled it from the claim end date (`CLM_THRU_DT`), not the CMS discharge date (`NCH_BENE_DSCHRG_DT`). `condition_start_date` is the claim start date (`CLM_FROM_DT`).
+- State is the patient's home state, not where they were treated. Provider and care site IDs were not used: CMS says they're random (manual, p. 15).
+- `visit_occurrence_id` values are labels, not a sequence. Stays are ordered by admit date.
+- `readmit_30 = 1` when the next admission starts 2 to 30 days after discharge. The 2-day minimum is intended to reduce split-claim counts; it still needs checking. A patient can contribute more than one flagged stay. This is a project definition, not the full CMS measure.
+- A next admission dated after the recorded death date does not count as a readmission.
+- Stays with recorded death on or before claim end are removed. A death later in the 30-day window does not exclude the stay; a qualifying readmission before that death can still count.
+- Stays discharged after 2010-12-01 are removed because data ends 2010-12-31 and they don't have a full 30 days of follow-up. They can still count as readmissions for earlier stays, since `LEAD()` runs before the filter.
+- `cost_per_readmit_usd` = $13,300 per readmission: HCUP 2011 Medicare figure ($24.0 billion / 1.8 million 30-day readmissions, hospital costs). No cost data for hospital stays exists in this dataset's `cost` table. 2011 is one year after the data ends. Source: [HCUP Statistical Brief #172](https://www.hcup-us.ahrq.gov/reports/statbriefs/sb172-Conditions-Readmissions-Payer.pdf).
+- `LIMIT` and `ORDER BY` were removed for the saved table: `LIMIT` doesn't lower cost, and saved tables don't keep row order.
 
-Use the pivot rather than the separate `Sheet1` table: during review that table contained a hardcoded nonzero NM excess value, formatted as dollars, while the current pivot calculated zero. The original interval calculation was not located in the inspected ranges. These workbook observations are historical, not claims about its present state.
+**Result:** 1,322,931 inpatient stays saved to `stays_final`.
+
+## Step 3: Pivot the stays table in Connected Sheets
+
+**Query:** [`03_connected_sheets_source.sql`](03_connected_sheets_source.sql)
+**Estimated data scanned:** a few MB per refresh (reads the small saved table, not the public dataset)
+
+**Why:** The state rates, benchmark, and cost estimate were calculated in [Connected Sheets](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?gid=1737753067#gid=1737753067), using Pivot Table 1.
+
+**How:** The output of this query was connected to Google Sheets with Connected Sheets, and pivot tables were run with state in rows:
+- 30-day readmission rate: `AVERAGE` of `readmit_30`
+- Stays: `COUNTA` of `readmit_30`
+- Share of stays: `COUNTA` of `readmit_30`, shown as % of column total
+- The row labeled "54" was excluded. Its meaning still needs to be confirmed.
+
+**Result:**
+- The reviewed state pivot has 1,313,758 stays and 120,503 readmissions: 9.17%. The earlier 9.16% note used a different total; the 9,173-stay difference from the saved table needs reconciliation. State rates range from 7.15% (UT) to 9.82% (MS).
+- Benchmark: 19,412 / 225,105 = 8.62%. Rank states from lowest rate and include whole states until they first cover at least 10% of stays. The first 14 cover 9.32%; adding California gives 15 and 17.13%. This adapts the ABC idea without its small-group adjustment. Source: Weissman et al., [Achievable benchmarks of care](https://pubmed.ncbi.nlm.nih.gov/10461579/).
+- Texas: 9.61% on 90,016 stays. Estimated hospital costs about $115.1 million for all recorded readmissions; about 891 events above the benchmark expectation, or $11.9 million at the same cost assumption. This does not establish preventability or savings.
+
+**Decision:** Use the adapted benchmark (8.62%) and investigate the Texas gap within this synthetic dataset.
+
+**Problem statement:** See [`charter.md`](../charter.md).
+
+
+**Workbook calculations:** `J2 = SUM(F38:F52)/SUM(C38:C52)` pools the reference. `G3 = MAX(0,(B3-$J$2)*C3)` gives the Texas difference; `J5 = G3*13300` prices it. Keep full precision. If the pivot order changes, recheck which states cover the first 10%.
+
+**Still to check:** the confidence-interval calculation and overlapping/adjacent claims in the next-stay rule. The dated workbook observations above were reviewed on October 27, 2026; no new BigQuery runs were made during this branch review.

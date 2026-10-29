@@ -1,42 +1,43 @@
-# Findings: A Readmission Difference to Investigate
+# Findings
 
-**Recommendation:** validate the stay definition, then test whether a simple risk model improves follow-up prioritization. The current comparison identifies a useful question; it does not yet justify an intervention.
+*Synthetic Medicare data, 2008–2010. These results describe this dataset, not actual Medicare patients or hospitals.*
 
-## What we found
+## The gap
 
-The state comparison contains **1,313,758 reconstructed stays** and **120,503 recorded readmissions**. Its overall rate is **9.17%**. Texas accounts for 90,016 stays and has a higher recorded rate than the lower-rate reference group.
+Texas residents account for 90,016 hospital stays in the state comparison. Of those, 8,654 were followed by a recorded readmission, a rate of **9.61%**. The benchmark group has a pooled rate of **8.62%**.
 
-| Measure | Texas comparison |
+| Measure | Texas |
 |---|---|
-| Recorded readmissions / stays | 8,654 / 90,016 |
-| Texas readmission rate | 9.61% |
-| Pooled reference rate | 8.62% |
-| Difference | +0.99 percentage points |
-| Difference expressed per 1,000 stays | about 10 additional recorded events |
-| Count above the reference-rate expectation | about 891 events |
+| Hospital stays | 90,016 |
+| Recorded readmissions | 8,654 |
+| Readmission rate | 9.61% |
+| Difference from the benchmark | +0.99 percentage points |
+| Additional recorded events at that difference | about 891 |
+| Estimated hospital costs at $13,300 per event | about $11.9 million |
 
-![Recorded readmission rates](visuals/readmission_comparison.png)
+The 891 compares the observed count with what we would expect at the benchmark rate. It does not tell us how many events were preventable. The cost estimate shows scale; it is not a savings estimate.
 
-The 891-event difference answers: **How many fewer recorded events would there be if these Texas stays had the reference group's rate?** It does not establish that those events were avoidable.
+![Texas readmission comparison](visuals/texas_readmission_gap.png)
 
-## How we selected the reference group
+The existing chart's confidence-interval calculation still needs to be documented. We should not use it to rule out chance until that check is complete.
 
-Rank states from lowest to highest recorded rate. Include whole states until their cumulative share first reaches 10% of all eligible stays, then pool their readmissions and stays.
+## The benchmark
 
-The first 14 cover 9.32% of stays. Including California crosses the threshold, bringing the group to 15 states/DC and 17.13% of stays. The pooled rate is **19,412 ÷ 225,105 = 8.62%**. This is a stay-based adaptation inspired by Achievable Benchmarks of Care; it uses raw state rates rather than the published method's small-sample ranking adjustment. [Weissman et al., 1999](https://pubmed.ncbi.nlm.nih.gov/10461579/)
+Start with the states with the lowest readmission rates. Include whole states until they cover at least 10% of all stays in the state comparison, then pool their readmissions and stays.
 
-## Why the size matters
+The first 14 cover 9.32% of stays. Adding California crosses 10%, giving 15 states/DC, 225,105 stays, and 19,412 readmissions. The pooled rate is **8.62%**. This adapts the Achievable Benchmarks of Care idea; it does not include the paper's adjustment for small groups. [Weissman et al., 1999](https://pubmed.ncbi.nlm.nih.gov/10461579/)
 
-Applying the project's $13,300 cost assumption to the 891-event difference gives an illustrative cost equivalent of about **$11.9 million**. The assumption is derived from 2011 Medicare age-65+ hospital-cost totals in [HCUP Statistical Brief #172, Table 1](https://www.ncbi.nlm.nih.gov/books/NBK206781/table/sb172.t1/). It illustrates scale; it is not measured savings or payments in this dataset.
+The $13,300 cost assumption comes from rounded 2011 Medicare age-65+ hospital-cost totals. [HCUP Statistical Brief #172, Table 1](https://www.ncbi.nlm.nih.gov/books/NBK206781/table/sb172.t1/)
 
-## What we recommend next
+## What's next
 
-First, check the reconstructed stays and outcome labels. Then compare a simple patient-risk model with a basic prediction rule, using the same follow-up capacity for both. If the model identifies more subsequent readmissions at that capacity, recommend further validation. If it does not, recommend the simpler rule. [Model plan](model/model_card.md)
+Check the stay definition, then build a model to help inform the recommendation. The model should improve on a simple prediction rule. It may help identify higher-risk stays, but it cannot by itself explain why the gap exists or prove that follow-up would reduce it.
 
-## What this evidence can support
+## Limits to keep in mind
 
-These CMS synthetic records are intended for training and development. CMS cautions that altered relationships limit inference about actual Medicare beneficiaries and providers. State means patient residence, and the dates are claim-date proxies. [CMS User Manual, printed pp. 1–2 and 16](https://www.cms.gov/Research-Statistics-Data-and-Systems/Downloadable-Public-Use-Files/SynPUFs/Downloads/SynPUF_DUG.pdf)
+- The data is synthetic, and relationships between variables were changed. It cannot establish actual Texas care quality.
+- State means where the patient lives, not where they were treated.
+- Claim start and end dates stand in for admission and discharge dates.
+- The 2–30-day next-stay rule is a project definition that still needs checking for overlapping or adjacent claims.
 
-The rates and chart can be reproduced from the saved aggregate counts. Source-stay validation, the prediction model, and a defensible uncertainty calculation remain unfinished. The new chart therefore reports the observed comparison without the original unverified confidence interval.
-
-[Reproduce the calculations](sql/README.md) · [Human and agent checks](audit_log.md)
+See [sql/README.md](sql/README.md) for the calculation steps and [charter.md](charter.md) for the question and scope.

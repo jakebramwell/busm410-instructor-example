@@ -1,15 +1,6 @@
 .DS_Store
 
-# Local secrets and credentials
+# Local credentials; do not publish these
 .env
-.env.*
-!.env.example
 credentials.json
 service-account*.json
-application_default_credentials.json
-
-# Local working files
-.venv/
-__pycache__/
-*.pyc
-work/
