@@ -1,55 +1,44 @@
-# Model Card: Readmission Risk
+# Model Card: Prioritizing Follow-Up
 
-**Status:** Proposed model. No model has been trained or evaluated in this repository. This card is a project-specific example; pending fields are not results.
+**Stage: design only. The model has not been trained, and there are no model results yet.** A model card explains the job a model should do, how it will be tested, and where its use is limited.
 
-## Purpose
+## The decision
 
-Demonstrate whether predicted risk can help a care-management director prioritize follow-up after a stay. Use only synthetic data for the demonstration. This model cannot authorize real patient care, provider rankings, or claims of preventable costs.
+A care-management leader has limited follow-up capacity. The project will test whether a model can identify more stays followed by a recorded readmission than a simple rule can, while prioritizing the same number of stays.
 
-## Prediction task
+For this teaching demonstration, set capacity at **10% of eligible stays**. This is a planning assumption, not an observed staffing limit. The same capacity must be used for the model and the comparison rule.
 
-| Item | Proposed design |
+## The first model
+
+| Design choice | Decision |
 |---|---|
-| One prediction represents | One reconstructed inpatient stay |
-| Prediction time | At the end of that stay, represented by the claim-end-date proxy |
-| Target | The project's `readmit_30` flag; its definition needs validation before training |
-| Source | Public CMS synthetic patient data in BigQuery, 2008–2010 |
-| Population | Eligible stays defined in the preparation query; choose and document all-state versus Texas-only modeling before training |
-| Model | Logistic regression in BigQuery ML, which estimates a probability for a yes/no outcome |
-| Candidate inputs | Age, prior inpatient use, and documented diagnoses available by prediction time; exact fields and availability must be checked |
-| Excluded inputs | Identifiers, next admission/date gap, `readmit_30`, `cost_per_readmit_usd`, future death dates/death-derived flags, and any later events or derived outcomes |
+| One prediction represents | One reconstructed inpatient stay, at its claim-end-date proxy |
+| What is predicted | The probability of the project's recorded 2–30-day readmission flag |
+| Population | Eligible state/DC stays, with Texas results also shown separately |
+| Method | Logistic regression in BigQuery ML: a model that estimates a probability for a yes/no outcome |
+| Initial inputs | Number of earlier inpatient stays before the current claim starts; current claim duration |
+| Information excluded | Patient/visit IDs as predictors, later admissions, future death information, outcome flags, and cost fields derived from those flags |
 
-A diagnosis's clinical date does not by itself prove the information was available to a real-time care team. This is a retrospective demonstration using claims.
+Both initial inputs can be derived from the existing stay fields. They are a modest starting point. Age and diagnosis features should be added only after their availability and timing are verified. Patient and visit keys can join records and break ranking ties; they do not become model predictors.
 
-## Baseline: the simple approach to beat
+## The simple approaches to beat
 
-For probability predictions, give every held-out stay the **readmission rate calculated from training data only**. Compare the model against that constant probability.
+**Probability check:** assign every test stay the readmission rate calculated from training data only. The model should provide better probability estimates than that constant prediction.
 
-For prioritization, compare with a simple rule such as ordering by prior inpatient use, if that feature is verified. Apply the same follow-up capacity to both approaches. Capacity and tie handling are pending decisions to settle before comparing results.
+**Prioritization check:** rank stays by the number of earlier inpatient stays and take the top 10%. Compare how many recorded readmissions this rule captures with how many the model captures. Use the same stable visit-key tie-break for both rankings.
 
-The 8.62% state reference rate is a descriptive benchmark. It is not automatically the predictive baseline. An always-no-readmission classifier may have high accuracy because most stays have no recorded readmission; accuracy alone would be misleading.
+The **8.62% state reference** measures a descriptive difference. The **model baseline** tests whether prediction adds value. They answer different questions.
 
-## Evaluation plan
+## How it will be tested
 
-Keep patients separate across training, validation, and final testing for a first demonstration of generalization to unseen people. Choose the split proportions, stable assignment method, and any tuning on training/validation data before opening the final test results. Fit preprocessing on training data only.
+Assign patients, rather than individual stays, to stable 60% training, 20% development, and 20% final-test groups. This checks performance on people excluded from training. It does not establish future-year performance. Fit any data transformations on training data only, and build history features using only earlier events.
 
-If the intended claim is prediction of future stays, use a time-based design instead and describe whether returning patients may appear in both periods. In either design, construct history features using only information before each prediction and ensure outcome follow-up is observable. Exact split SQL and cohort counts are pending.
+Use the development group to make model choices. Keep the final-test group separate until the design is fixed. Report probability error, readmissions captured at the 10% capacity, flagged stays without a readmission, and results by Texas versus other states with group sizes.
 
-| Check | Why it matters | Baseline result | Model result |
-|---|---|---|---|
-| Log loss | Measures the quality of predicted probabilities; lower is better | Not run | Not run |
-| Predicted versus observed rates by risk group | Checks whether probability estimates match observed outcomes | Not run | Not run |
-| Readmissions captured at agreed follow-up capacity | Tests the decision the model is intended to support | Not run | Not run |
-| Errors by home state and available age groups | Checks where performance is weaker; show group sizes | Not run | Not run |
+## What would change the recommendation
 
-Explain false positives (flagged stays with no readmission) and false negatives (readmissions the model misses). Keep the final test set separate from model, threshold, or capacity selection.
+If the model improves the final-test comparison enough to justify its complexity, recommend further validation. If it adds little, recommend the simpler rule. Predictive associations do not establish why events occur or whether follow-up would prevent them.
 
-## Results and decision
+**Still required before training:** validate stay/outcome definitions, write feature and split SQL, inspect available history, confirm the training run fits the free-tier setup, and save executed evaluation results. Synthetic-data success would still require real-world validation before care use.
 
-**Pending:** training/evaluation SQL, run date, model identifier and options, split counts, metrics, uncertainty, and human review. Add links to executed artifacts when they exist. Feature associations can suggest questions; they cannot prove why readmissions occur.
-
-Recommend the model only if its held-out benefit at the agreed capacity supports its added complexity. Otherwise recommend the simpler approach. Even a successful synthetic-data model needs real-world validation before operational use.
-
-## Reproduce and audit
-
-Preparation: [sql/README.md](../sql/README.md). Human checks: [audit_log.md](../audit_log.md). Before training, confirm the model type and full run plan fit the course's free-tier setup. Training cost and availability have not been checked for this proposed run.
+[Preparation and checks](../sql/README.md) · [Audit evidence](../audit_log.md)
