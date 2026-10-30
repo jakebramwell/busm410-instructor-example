@@ -19,7 +19,7 @@ This file is evidence of **the human auditing the agent**. As the project unfold
 
 Skip routine approvals, wording feedback, ordinary clarification, the agent's own checks, and checks of human work. The agent can write the record, but the human must have made the check. The agent's response may resolve an issue the human raised; describe that response without pretending the human did work they did not do.
 
-Before adding an entry, read the relevant earlier entries to avoid duplicates and find the next unused number. Append to the existing table using its five columns: entry number, date, what the agent said or did, how the human checked it, and the result. Keep entries short and add source or query links when available. Record a qualifying check without waiting for a separate request to log it.
+Before adding an entry, read the relevant earlier entries to avoid duplicates and find the next unused number. File each entry under one category heading: Caught an error, Verified a claim, Separated fact from opinion, Changed the analysis, or Improved the agent's instructions. Use the table's five columns (entry number, date, what the agent said or did, how the human checked it, and the result), then update that category's count in the summary table at the top. Keep entries short and add source or query links when available. Record a qualifying check without waiting for a separate request to log it.
 
 Do not invent reviews, results, dates, sources, or a second student. If the human reports a check performed elsewhere and evidence is unavailable, say so. A source request does not prove the source was checked. A preview does not prove a whole-column property. Mark unresolved issues as pending.
 

@@ -2,10 +2,19 @@
 
 Read this first. BUSM 410 instructor example: 30-day readmission analysis in BigQuery, built with an AI agent.
 
-Use the [project-audit skill](.agents/skills/project-audit/SKILL.md) to maintain audit records while we work. Use SQL and Google Sheets; do not add Python files or Python setup.
+Use SQL and Google Sheets; do not add Python files or Python setup.
+
+## File index
+
+| File | Use it when |
+|---|---|
+| `project-audit` skill: [.agents/skills/project-audit/SKILL.md](.agents/skills/project-audit/SKILL.md) | You're starting a work session, or I check or correct your work. Read it yourself; don't count on finding it automatically |
+| [Other/audit_protocol.md](Other/audit_protocol.md) | You need my process for checking your work |
+| [Other/audit_log.md](Other/audit_log.md) | You're adding or reading audit entries |
 
 ## How to work with me
 - Keep replies short and use my plain wording. Explain the context before giving feedback. Define technical terms when needed.
+- When you write in my voice (README, charter, findings, commit messages), say what something is. Don't describe it by what it isn't.
 - Questions get answers, not actions. If I ask a question (including "should we...?" or "what do you think?"), reply only. Don't create, edit, or delete any file until I clearly tell you to make a change (for example, "go ahead" or "make that change"). Two standing exceptions: audit log entries and checkpoint commits (see below).
 - Back claims about the data with a source (document + page). Say when something is your inference, not documented fact from the context files you're provided.
 - Ask me to confirm a table or column exists before suggesting to use it. Don't assume the standard OMOP schema for this dataset.
