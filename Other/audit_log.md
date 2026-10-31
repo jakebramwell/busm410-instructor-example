@@ -4,7 +4,7 @@ Each entry is a time I checked my AI agent's work, grouped by the kind of check.
 
 | Category | What it means | Entries |
 |---|---|---|
-| [Caught an error](#caught-an-error) | The agent was wrong, and I found it. | 5 |
+| [Caught an error](#caught-an-error) | The agent was wrong, and I found it. | 6 |
 | [Verified a claim](#verified-a-claim) | I checked a claim against the documentation or the data. | 5 |
 | [Separated fact from opinion](#separated-fact-from-opinion) | I asked whether a claim was documented or the agent's own conclusion. | 1 |
 | [Changed the analysis](#changed-the-analysis) | My judgment changed the approach or the framing. | 5 |
@@ -19,6 +19,7 @@ Each entry is a time I checked my AI agent's work, grouped by the kind of check.
 | 13 | 2026-10-23 | Planned to price the problem by joining the `cost` table to each inpatient stay. | Asked what exactly the AI planned to pull from `cost`, which made it check the conversion code instead of assuming. | **Caught an error.** The OMOP conversion (OHDSI ETL-CMS) only writes costs for prescription drugs and physician claim lines. Inpatient stay payments were never loaded into `cost`, so the original plan wouldn't work. |
 | 14 | 2026-10-23 | Called the pooled best-quartile rate a "standard best-practice benchmark." | Asked for a published source proving it's standard, so a healthcare analytics employer would accept it. | **Corrected an overclaim.** No source defines a best-quartile benchmark. The closest established methods are Achievable Benchmarks of Care (Weissman et al., 1999; pooled rate of top performers covering at least 10% of patients) and the CMS Hospital Value-Based Purchasing benchmark (mean of the top 10% of hospitals). Switched to a named, citable method. |
 | 17 | 2026-10-29 | Added its own calculation checks as audit entry 16. | I pointed out that this log should show the human auditing the agent, not the agent's own checks. | **Corrected the scope.** Removed entry 16 and changed the agent instructions and audit skill to log human checks only. |
+| 20 | 2026-10-30 | Agent said splitting the model's training and test sets by year would keep a patient's stays out of both sets. | Jake gave a counterexample: a patient with stays in November 2009, December 2009, and January 2010. | **Corrected.** A year split doesn't prevent overlap; splitting by patient does. A year split still helps mimic predicting future stays. |
 
 ## Verified a claim
 

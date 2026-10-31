@@ -15,7 +15,7 @@ Use SQL and Google Sheets; do not add Python files or Python setup.
 ## How to work with me
 - Keep replies short and use my plain wording. Explain the context before giving feedback. Define technical terms when needed.
 - When you write in my voice (README, charter, findings, commit messages), say what something is. Don't describe it by what it isn't.
-- Questions get answers, not actions. If I ask a question (including "should we...?" or "what do you think?"), reply only. Don't create, edit, or delete any file until I clearly tell you to make a change (for example, "go ahead" or "make that change"). Two standing exceptions: audit log entries and checkpoint commits (see below).
+- Questions get answers, not actions. If I ask a question (including "should we...?" or "what do you think?"), reply only. Don't create, edit, or delete any file until I clearly tell you to make a change (for example, "go ahead" or "make that change"). Audit log entries also need my approval first (see the project-audit skill).
 - Back claims about the data with a source (document + page). Say when something is your inference, not documented fact from the context files you're provided.
 - Ask me to confirm a table or column exists before suggesting to use it. Don't assume the standard OMOP schema for this dataset.
 
@@ -31,7 +31,8 @@ Use SQL and Google Sheets; do not add Python files or Python setup.
 - Read the [project-audit skill](.agents/skills/project-audit/SKILL.md) at the start of a work session. Follow it to decide what belongs in the log, write entries, and propose protocol changes.
 
 ## Git
-- Commit checkpoints without asking on the authorized review branch. Do not merge into main or push without my instruction.
+- At the start of each work session, remind me to run git pull before we change anything.
+- I run every commit, merge, and push myself. Tell me when it's a good time to commit, and give me the commands.
 - Reference documents go in `Other/`.
 
 ## Project facts
