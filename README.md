@@ -23,6 +23,7 @@ The 8.62% benchmark uses the Achievable Benchmarks of Care (ABC) method, from [W
 | [charter.md](charter.md) | The question, scope, and intended decision |
 | [findings.md](findings.md) | The data story, charts, and recommendation |
 | [Analysis workbook](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?usp=sharing) | Connected Sheets analysis; use Pivot Table 1 |
+| [Other/state_pivot_2026-10-30.csv](Other/state_pivot_2026-10-30.csv) | Snapshot of Pivot Table 1: rate, stays, cost, and excess readmissions by state |
 | [sql/](sql/README.md) | Queries and short notes on how the numbers were produced |
 | [model/](model/notes.md) | Model work; the [model card](model/model_card.md) is a placeholder |
 | [visuals/](visuals/) | Charts |

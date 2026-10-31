@@ -66,6 +66,8 @@ Dataset: `bigquery-public-data.cms_synthetic_patient_data_omop`
 
 **Problem statement:** See [`charter.md`](../charter.md).
 
-**Workbook calculations:** `J2 = SUM(F38:F52)/SUM(C38:C52)` pools the benchmark states. `G3 = MAX(0,(B3-$J$2)*C3)` gives Texas's readmissions above the benchmark; `J5 = G3*13300` prices them. Keep full precision. If the pivot order changes, recheck which states make up the first 10%.
+**Workbook calculations:** `J2 = SUM(F38:F52)/SUM(C38:C52)` pools the benchmark states. `G3 = MAX(0,(B3-$J$2)*C3)` gives Texas's readmissions above the benchmark; `J5 = G3*13300` prices them. The confidence interval uses gap `=B3-J2` and margin of error `=1.96*SQRT(B3*(1-B3)/C3 + J2*(1-J2)/SUM(C38:C52))`: gap 0.99 points, 95% CI 0.77 to 1.22. Keep full precision. If the pivot order changes, recheck which states make up the first 10%.
 
-**Still to check:** the confidence-interval calculation, and overlapping or back-to-back claims in the next-stay rule.
+**Snapshot:** [Other/state_pivot_2026-10-30.csv](../Other/state_pivot_2026-10-30.csv) saves Pivot Table 1 as of 2026-10-30.
+
+**Still to check:** overlapping or back-to-back claims in the next-stay rule.

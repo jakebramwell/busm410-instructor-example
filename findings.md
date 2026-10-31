@@ -19,7 +19,7 @@ The 891 is the gap between what Texas recorded and what the benchmark rate would
 
 ![Texas readmission comparison](visuals/texas_readmission_gap.png)
 
-The chart's confidence interval still needs its calculation documented before we use it to rule out chance.
+The gap is 0.99 points, with a 95% confidence interval of 0.77 to 1.22 points. The whole interval is above zero, so the gap is unlikely to be chance.
 
 ## The benchmark
 
