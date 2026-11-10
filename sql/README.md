@@ -4,6 +4,12 @@ Queries for the 30-day readmission analysis, in the order they were run: what ea
 
 Dataset: `bigquery-public-data.cms_synthetic_patient_data_omop`
 
+## Check the numbers
+
+Open the [analysis workbook](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?usp=sharing) and select **Pivot Table 1**. Texas has 8,654 recorded readmissions across 90,016 stays. The benchmark pools 19,412 readmissions across 225,105 stays.
+
+To follow the queries below in BigQuery, replace the instructor's project ID, `cloud-services-example`, with your own before saving results.
+
 ## Step 1: Find the inpatient claim type
 
 **Query:** [`01_claim_type_lookup.sql`](01_claim_type_lookup.sql)

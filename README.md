@@ -36,13 +36,3 @@ The 8.62% benchmark uses the Achievable Benchmarks of Care (ABC) method, from [W
 | **[Audit skill](.agents/skills/project-audit/SKILL.md)** | Instructions for the agent to maintain the audit records as we work |
 | **[CLAUDE.md](CLAUDE.md)** | Points Claude to the same working instructions |
 | [.gitignore](.gitignore) | Keeps local files and credentials out of GitHub |
-
-## Check the numbers
-
-Open the analysis workbook listed above and select **Pivot Table 1**. Texas has 8,654 recorded readmissions across 90,016 stays. The benchmark pools 19,412 readmissions across 225,105 stays.
-
-Use [sql/README.md](sql/README.md) to follow the queries in BigQuery. Replace the instructor's project ID, `cloud-services-example`, with your own before saving results.
-
-## Who did the work
-
-Jake Bramwell, working with an AI agent. How I worked with my AI agent is documented in the files in bold above. 
