@@ -4,11 +4,7 @@ Queries for the 30-day readmission analysis, in the order they were run: what ea
 
 Dataset: `bigquery-public-data.cms_synthetic_patient_data_omop`
 
-## Check the numbers
-
-Open the [analysis workbook](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?usp=sharing) and select **Pivot Table 1**. Texas has 8,654 recorded readmissions across 90,016 stays. The benchmark pools 19,412 readmissions across 225,105 stays.
-
-To follow the queries below in BigQuery, replace the instructor's project ID, `cloud-services-example`, with your own before saving results.
+To run these queries yourself, replace the instructor's project ID, `cloud-services-example`, with your own before saving results.
 
 ## Step 1: Find the inpatient claim type
 
@@ -66,7 +62,7 @@ To follow the queries below in BigQuery, replace the instructor's project ID, `c
 **Result:**
 - 50 states plus DC: 1,313,758 stays and 120,503 readmissions, or 9.17%. That's the saved table's 1,322,931 stays minus the 9,173 in row "54." (The earlier 9.16% included row "54.") State rates range from 7.15% (UT) to 9.82% (MS).
 - Benchmark: 19,412 / 225,105 = 8.62%. Rank states from lowest rate and add whole states until they cover at least 10% of stays. The first 14 cover 9.32%; adding California makes 15 states and 17.13%. This adapts Achievable Benchmarks of Care ([Weissman et al., 1999](https://pubmed.ncbi.nlm.nih.gov/10461579/)) without its small-group adjustment.
-- Texas: 9.61% on 90,016 stays. All recorded readmissions cost about $115.1 million. The 891 above the benchmark cost about $11.9 million at the same rate. Preventability and savings need further study.
+- Texas: 9.61% (8,654 readmissions on 90,016 stays). All recorded readmissions cost about $115.1 million. The 891 above the benchmark cost about $11.9 million at the same rate. Preventability and savings need further study.
 
 **Decision:** Use the 8.62% benchmark and investigate the Texas gap in this dataset.
 
