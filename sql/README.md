@@ -11,7 +11,7 @@ To run these queries yourself, replace the instructor's project ID, `cloud-servi
 **Query:** [`01_claim_type_lookup.sql`](01_claim_type_lookup.sql)
 **Estimated data scanned:** about 2.4 GB
 
-**Why:** `condition_occurrence` mixes inpatient and outpatient diagnoses. We need the ID that marks inpatient rows.
+**Why:** The data dictionary did not clearly state which `condition_type_concept_id` identifies inpatient rows. Because `condition_occurrence` mixes inpatient and outpatient diagnoses, we ran this lookup first to identify the inpatient concept ID.
 
 **Result:**
 
