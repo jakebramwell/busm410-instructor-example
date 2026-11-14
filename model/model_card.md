@@ -53,6 +53,7 @@ Before training, the model's table ([sql/04](../sql/04_analysis_table.sql)) was 
 
 ## To-do
 
+- [ ] **Rerun the model so it matches the code.** The saved model was trained with two extra options that have since been removed from sql/05. Rerun sql/05, then both queries in sql/06, and update the numbers on this page if they change. Do this before comparing the model with the rule.
 - [ ] **Compare the model with a simple rule.** A model is only worth using if it does better than something simpler. The rule: call everyone who was in the hospital in the last 6 months. Test both on the same test patients and see which one finds more of the people who actually came back.
 - [ ] **Check whether Texas's patients explain its gap.** Use the model to estimate how many readmissions Texas would have based on who its patients are, and compare that with the 9,055 that happened.
 
