@@ -1,6 +1,6 @@
 -- Step 2: One row per inpatient stay with state, death date, 30-day readmission flag, and cost per readmission. See sql/README.md for notes.
 
-CREATE TABLE `cloud-services-example.readmissions.stays_final` AS
+CREATE OR REPLACE TABLE `cloud-services-example.readmissions.stays_final` AS
 WITH stays AS (
   SELECT
     person_id,
@@ -40,9 +40,9 @@ almost_there AS (
 final AS (
 SELECT
   *,
-  CASE WHEN days_to_next_admit BETWEEN 2 AND 30
+  CASE WHEN days_to_next_admit BETWEEN 1 AND 30
         AND (death_date IS NULL OR death_date >= next_admit_date) THEN 1 ELSE 0 END AS readmit_30,
-  CASE WHEN days_to_next_admit BETWEEN 2 AND 30
+  CASE WHEN days_to_next_admit BETWEEN 1 AND 30
         AND (death_date IS NULL OR death_date >= next_admit_date) THEN 13300 ELSE 0 END AS cost_per_readmit_usd,
   CASE WHEN death_date <= discharge_date THEN "Remove" ELSE "Keep" END AS death_filter
 FROM almost_there
@@ -50,4 +50,5 @@ FROM almost_there
 SELECT *
 FROM final
 WHERE death_filter = "Keep"
-  AND discharge_date <= DATE "2010-12-01";
+  AND discharge_date <= DATE "2010-12-01"
+  AND (days_to_next_admit IS NULL OR days_to_next_admit >= 1);

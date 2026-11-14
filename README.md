@@ -1,38 +1,42 @@
-# Medicare Patients: Example Project
+# Hospital Readmissions in Medicare: Example Project
 
-This is a worked example of the BUSM 410 semester project, using public data in BigQuery and an AI agent (Claude Work - Opus 5.5).
+This is a worked example of the BUSM 410 semester project. I used public data in Google BigQuery, with help from an AI agent, to find a business problem, measure it, and test a way to address it.
 
-| Item | Value |
+| | |
 |---|---|
 | Name | Jake Bramwell |
-| Team name | Instructor Example |
-| Canvas team number | None (instructor) |
-| Dataset | `bigquery-public-data.cms_synthetic_patient_data_omop` (synthetic Medicare patient records) |
+| Team | Instructor Example (no Canvas team number) |
+| Data | Synthetic (realistic but made-up) Medicare patient records, 2008–2010: `bigquery-public-data.cms_synthetic_patient_data_omop` |
 | Google Cloud project ID | `cloud-services-example` |
 
-## Problem framing
+## The short version
 
-In this synthetic dataset, **90,016 hospital stays by Texas residents** were followed by a readmission to a hospital within 30 days **9.61%** of the time, compared with **8.62%** in the benchmark group. That difference works out to **about 891 additional recorded events** over three years. At an estimated $13,300 per readmission, that represents **about $11.9 million in hospital costs**.
+- **The problem:** A *readmission* is when a patient leaves the hospital and has to come back within 30 days. Hospital stays by Texas residents led to a readmission **10.40%** of the time. The best-performing states averaged **9.18%**.
+- **How big it is:** That gap adds up to about **1,057 extra readmissions** over three years, or about **$14.1 million** in hospital costs at $13,300 each.
+- **What to do about it:** We built a prediction model to pick which patients a care team should call after they leave the hospital. It did no better than a simple rule: **call everyone who was in the hospital in the last 6 months.** We recommend the rule.
 
-The 8.62% benchmark uses the Achievable Benchmarks of Care (ABC) method, from [Weissman et al., "Achievable benchmarks of care: the ABCs of benchmarking" (1999)](https://pubmed.ncbi.nlm.nih.gov/10461579/).
+## Files
 
-## Explore the work
-
-| File or link | What it's for |
+| File | What's in it |
 |---|---|
-| [charter.md](charter.md) | The question, scope, and intended decision |
-| [findings.md](findings.md) | The data story, charts, and recommendation |
-| [Analysis workbook](https://docs.google.com/spreadsheets/d/1-k3lznH6OZNAZwy39aBjoEVW0L6m0MZH7Ud-2KlPrN8/edit?usp=sharing) | Connected Sheets analysis; use Pivot Table 1 |
-| [Other/state_pivot_2026-10-30.csv](Other/state_pivot_2026-10-30.csv) | Snapshot of Pivot Table 1: rate, stays, cost, and excess readmissions by state |
-| [sql/](sql/README.md) | Queries and short notes on how the numbers were produced |
-| [model/](model/notes.md) | Model work; the [model card](model/model_card.md) is a placeholder |
+| [charter.md](charter.md) | The question and what a good answer looks like |
+| [findings.md](findings.md) | The results and the recommendation |
+| [model/model_card.md](model/model_card.md) | The prediction model: how it was built and tested, and how it compared with the rule |
+| [model/notes.md](model/notes.md) | Decisions made while building the model |
+| [sql/README.md](sql/README.md) | Every query, in order, with what it did and why |
+| [Analysis workbook](https://docs.google.com/spreadsheets/d/1XnLg82ePxkSuYE-KfKobFYNcuVbInf0kQ4ceUpW6lQA/edit?gid=738753992#gid=738753992) | Google Sheet connected to BigQuery; the state rates are in Pivot Table 1 |
+| [Other/state_pivot_2026-10-30.csv](Other/state_pivot_2026-10-30.csv) | Saved copy of the state table from Oct 30, before the Nov 12 data fix |
 | [visuals/](visuals/) | Charts |
-| [Other/metadata.pdf](Other/metadata.pdf) | CMS documentation for the source data |
-| [Other/readmission_erd.dbml](Other/readmission_erd.dbml) | The table relationship diagram source |
-| [Other/ERD.pdf](Other/ERD.pdf) | The table relationship diagram as a picture |
-| **[AGENTS.md](AGENTS.md)** | Instructions and project facts for the agent |
-| **[Other/audit_protocol.md](Other/audit_protocol.md)** | How I work with and check the agent |
-| **[Other/audit_log.md](Other/audit_log.md)** | Examples of me checking and correcting the agent |
-| **[Audit skill](.agents/skills/project-audit/SKILL.md)** | Instructions for the agent to maintain the audit records as we work |
-| **[CLAUDE.md](CLAUDE.md)** | Points Claude to the same working instructions |
-| [.gitignore](.gitignore) | Keeps local files and credentials out of GitHub |
+| [Other/metadata.pdf](Other/metadata.pdf) | CMS's guide to the original data |
+| [Other/ERD.pdf](Other/ERD.pdf) | Diagram of how the data tables connect ([code that draws it](Other/readmission_erd.dbml)) |
+
+**Working with the AI agent**
+
+| File | What's in it |
+|---|---|
+| [AGENTS.md](AGENTS.md) | My instructions to the AI agent |
+| [CLAUDE.md](CLAUDE.md) | Points Claude to AGENTS.md |
+| [Other/audit_protocol.md](Other/audit_protocol.md) | How I check the agent's work |
+| [Other/audit_log.md](Other/audit_log.md) | Examples of me catching and correcting the agent |
+| [.agents/skills/project-audit/SKILL.md](.agents/skills/project-audit/SKILL.md) | Tells the agent how to keep the audit records |
+| [.gitignore](.gitignore) | Keeps private files off GitHub |
