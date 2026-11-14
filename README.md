@@ -22,7 +22,6 @@ This is a worked example of the BUSM 410 semester project. I used public data in
 | [charter.md](charter.md) | The question and what a good answer looks like |
 | [findings.md](findings.md) | The results and the recommendation |
 | [model/model_card.md](model/model_card.md) | The prediction model: how it was built and tested, and how it compared with the rule |
-| [model/notes.md](model/notes.md) | Decisions made while building the model |
 | [sql/README.md](sql/README.md) | Every query, in order, with what it did and why |
 | [Analysis workbook](https://docs.google.com/spreadsheets/d/1XnLg82ePxkSuYE-KfKobFYNcuVbInf0kQ4ceUpW6lQA/edit?gid=738753992#gid=738753992) | Google Sheet connected to BigQuery; the state rates are in Pivot Table 1 |
 | [Other/state_pivot_2026-10-30.csv](Other/state_pivot_2026-10-30.csv) | Saved copy of the state table from Oct 30, before the Nov 12 data fix |

@@ -13,6 +13,16 @@ It gives every hospital stay a score: the chance the patient comes back to the h
 | Features (X's) | Age, sex, length of stay, number of prior stays, hospital stay in the last 6 months (yes/no), number of conditions in the past year. Only facts known at discharge. |
 | Training vs. testing | 80% of patients trained the model. The other 20% (254,776 stays) were held back to test it, like a final exam the model never studied for. Split by patient, so no patient appears in both. |
 
+## How the data was checked
+
+Before training, the model's table ([sql/04](../sql/04_analysis_table.sql)) was checked for problems:
+
+- 1,281,691 rows, the same as the stays table, so no stays were duplicated.
+- No blanks and no impossible values: length of stay 0–35 days, age 24–101, prior stays 0–14.
+- About 17% of stays are patients under 65. That fits Medicare, which also covers younger people with disabilities.
+- The shortest gap since a last stay is 1 day, which confirms the duplicate-bill rows were removed.
+- One patient was checked by hand: the prior-stay count goes up by one each stay, a 135-day gap checks out, and the readmission flag sits on the right stay.
+
 ## Report card: is it any good?
 
 `ML.EVALUATE` on the test patients:
