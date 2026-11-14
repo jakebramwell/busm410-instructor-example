@@ -113,28 +113,16 @@ The table also keeps `person_id`, `visit_occurrence_id`, the stay dates, and `st
 - Uses six features: `age`, `sex`, `los`, `prior_stays`, `stay_in_last_6mo`, `conditions_last_year`. State is left out on purpose so it can be used for the Texas check later.
 - Uses `stay_in_last_6mo` instead of `days_since_last_stay`. BigQuery fills blank numbers with the average, which would wrongly give first-time patients an "average" gap. The TRUE/FALSE version has no blanks.
 - `enable_global_explain = TRUE` lets us rank the features afterward.
-- `calculate_p_values = TRUE` checks whether each feature's effect is real or could be zero.
-- `category_encoding_method = 'DUMMY_ENCODING'` is required for p-values. It makes FEMALE the starting point, so the MALE result reads as "difference from female."
 
 ## Step 6: Test the model
 
-**Query:** [`06_evaluate_model.sql`](06_evaluate_model.sql) (six queries; run them one at a time). The fourth saves the table `readmissions.test_scores`.
+**Query:** [`06_evaluate_model.sql`](06_evaluate_model.sql) (two queries; run them one at a time)
 
-**Why:** To find out whether the model is any good, what drives it, and whether it beats the simple rule. Every query uses only the test patients.
+**Why:** To find out whether the model is any good and which features it relied on. The report card uses only the test patients.
 
 | Query | What it answers | Result |
 |---|---|---|
 | `ML.EVALUATE` | Is the model any good? | Score (`roc_auc`) of 0.548: weak, barely better than a coin flip (0.5). Its 90% accuracy is misleading, because always guessing "no readmission" also scores 90%. |
-| `ML.GLOBAL_EXPLAIN` | Which features mattered most? | Prior stays, by far. Age mattered least. |
-| `ML.ADVANCED_WEIGHTS` | Does each feature raise or lower risk, and by how much? | `EXP(weight)` turns each weight into a change in the odds: +12.6% per prior stay; men 8.3% lower than women. Age had no real effect. |
-| `test_scores` + model and rule queries | Who should a care team call? | Of every 100 patients called: about 10 come back if chosen at random, 13 from the model's top 10%, and 13 from the rule's list. A tie. |
+| `ML.GLOBAL_EXPLAIN` | Which features did the model rely on most? | Prior stays, by far. Age least. |
 
-**How the model-vs-rule comparison works:**
-
-1. `ML.PREDICT` gives every test stay a risk score. `NTILE(10)` lines the stays up from highest score to lowest and cuts the line into 10 equal groups. Both are saved in `test_scores`, with one row per test stay.
-2. The model query shows the share of each group that actually came back. Group 1 is the model's top 10%.
-3. The rule query shows the share of the rule's list that came back, and how many stays the rule flags.
-
-To see it as a chart, point a Connected Sheets pivot at `test_scores`: `risk_group` as rows, `AVERAGE` of `readmit_30` as values, then a column chart. If the bars step down from group 1 to group 10, the model ranks patients well; if they're nearly flat, it doesn't. `test_scores` also keeps `state` for the Texas check later.
-
-**Decision:** Use the simple rule. See [model/model_card.md](../model/model_card.md).
+**Next:** Compare the model with a simple rule (the to-do in [model/model_card.md](../model/model_card.md)).

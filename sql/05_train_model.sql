@@ -4,9 +4,7 @@ CREATE OR REPLACE MODEL `cloud-services-example.readmissions.readmit_model`
 OPTIONS (
   model_type = 'logistic_reg',
   input_label_cols = ['readmit_30'],
-  enable_global_explain = TRUE,
-  calculate_p_values = TRUE,
-  category_encoding_method = 'DUMMY_ENCODING'
+  enable_global_explain = TRUE
 ) AS
 SELECT
   readmit_30,

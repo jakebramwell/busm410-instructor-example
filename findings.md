@@ -31,23 +31,15 @@ Requiring 10% of all stays keeps a few small states with lucky numbers from sett
 
 The $13,300 cost per readmission comes from 2011 Medicare hospital-cost totals ([HCUP Statistical Brief #172, Table 1](https://www.ncbi.nlm.nih.gov/books/NBK206781/table/sb172.t1/)).
 
-## Who to call: a model vs. a simple rule
+## The model
 
-A care team can't call every patient after they leave the hospital, so we tested two ways to choose whom to call. Both were tested on patients the model never saw while it was being built:
-
-| Who gets a call | Came back to the hospital, per 100 called |
-|---|---|
-| Random patients | about 10 |
-| The 10% of patients the model scored as highest risk | about 13 |
-| Everyone who was in the hospital in the last 6 months (the rule) | about 13 |
-
-The model did no better than the one-line rule. Its overall score was 0.548, barely better than a coin flip (0.5). The thing that best predicted a readmission was how many times the patient had been in the hospital before; age made no difference.
-
-**Recommendation: use the rule.** It works as well as the model, needs no model to build or maintain, and a nurse can apply it without a computer. Details are in [model/model_card.md](model/model_card.md).
+We built a prediction model that scores each hospital stay's chance of a readmission. So far it's weak: its score was 0.548, barely better than a coin flip (0.5). It relied most on how many times the patient had been in the hospital before, and barely used age. Details are in [model/model_card.md](model/model_card.md).
 
 ## What's next
 
-Check whether Texas's gap comes from its patients being sicker (its *patient mix*). To do this, compare the number of readmissions the model expects for Texas patients with the 9,055 that actually happened. Proving that follow-up calls reduce readmissions would need a separate test.
+- **Compare the model with a simple rule:** call everyone who was in the hospital in the last 6 months. If the model doesn't do better, the rule is the better choice, since it needs no model.
+- **Check whether Texas's gap comes from its patients being sicker** (its *patient mix*), by comparing the readmissions the model expects for Texas patients with the 9,055 that actually happened.
+- Proving that follow-up calls reduce readmissions would need a separate test.
 
 ## Limits
 
