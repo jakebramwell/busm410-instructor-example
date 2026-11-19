@@ -112,7 +112,7 @@ The table also keeps `person_id`, `visit_occurrence_id`, the stay dates, and `st
 - It learns only from training patients (`WHERE is_training`), so the test patients stay unseen.
 - It uses six features: `age`, `sex`, `los`, `prior_stays`, `stay_in_last_6mo`, and `conditions_last_year`. I left state out on purpose, so I can use it for the Texas check later.
 - It uses `stay_in_last_6mo` in place of `days_since_last_stay`. BigQuery fills blank numbers with the average, which would give first-time patients a made-up "average" gap. The TRUE/FALSE version has no blanks.
-- `calculate_p_values = TRUE` and `category_encoding_method = 'DUMMY_ENCODING'` turn on p-values, so I can read each feature the way the textbook reads its coefficient tables.
+- `calculate_p_values = TRUE` and `category_encoding_method = 'DUMMY_ENCODING'` turn on p-values, so I can tell which features have a real link.
 - `max_iterations = 50` and `early_stop = FALSE` let the model finish fitting. By default, BigQuery can stop after a few rounds, before the coefficients settle. That happened here first: the early-stopped model gave sex and conditions in the past year the opposite sign, and ranked prior stays first.
 
 ## Step 6: Test the model
