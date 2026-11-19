@@ -1,6 +1,6 @@
 # SQL Notes
 
-What each query does, in the order the queries were run.
+What each query does, in the order I ran them.
 
 - Data: `bigquery-public-data.cms_synthetic_patient_data_omop`
 - To run these yourself, replace `cloud-services-example` (my Google Cloud project ID) with yours.
@@ -10,7 +10,7 @@ What each query does, in the order the queries were run.
 **Query:** [`01_claim_type_lookup.sql`](01_claim_type_lookup.sql)
 **Data scanned:** about 2.4 GB
 
-**Why:** The `condition_occurrence` table mixes hospital diagnoses (*inpatient*) with doctor's-office diagnoses (*outpatient*), and the documentation didn't say which code marks the hospital ones.
+**Why:** The `condition_occurrence` table mixes hospital diagnoses (*inpatient*) with doctor's-office diagnoses (*outpatient*). The documentation didn't say which code marks the hospital ones.
 
 **Result:**
 
@@ -26,44 +26,44 @@ What each query does, in the order the queries were run.
 **Query:** [`02_inpatient_stays.sql`](02_inpatient_stays.sql)
 **Data scanned:** about 11 GB. Saves the table `readmissions.stays_final`.
 
-**Why:** To calculate a readmission rate, we need one row per hospital stay, with its dates, the patient's home state, and whether a readmission followed.
+**Why:** To calculate a readmission rate, I need one row per hospital stay, with its dates, the patient's home state, and whether a readmission followed.
 
 **How the query works, piece by piece:**
 
 - `stays`: groups diagnosis rows into stays, one row per patient (`person_id`) and stay (`visit_occurrence_id`).
 - `deaths`: one death date per patient.
-- `almost_there`: adds the patient's home state, and uses `LEAD()` to look ahead to the patient's next stay and count the days until it.
+- `almost_there`: adds the patient's home state. `LEAD()` looks ahead to the patient's next stay and counts the days until it.
 - `final`: adds the readmission flag (`readmit_30`), the cost, and the death filter.
 
 **Rules and choices:**
 
-- **Dates:** The data has no true admission or discharge dates. The original CMS files had them (`CLM_ADMSN_DT` and `NCH_BENE_DSCHRG_DT` in metadata.pdf), but they were dropped when the data was converted into the format we query in BigQuery. We use the start and end dates on the hospital's bill instead (`condition_start_date` and `condition_end_date`).
+- **Dates:** The data has no true admission or discharge dates. The original CMS files had them (`CLM_ADMSN_DT` and `NCH_BENE_DSCHRG_DT` in metadata.pdf), but they were dropped when the data was converted for BigQuery. I use the start and end dates on the hospital's bill instead (`condition_start_date` and `condition_end_date`).
 - **Readmission:** `readmit_30 = 1` when the patient's next stay starts 1 to 30 days after this one ends. A patient can have more than one.
-- **Duplicate bills:** Some stays were billed as several overlapping bills, so the "next stay" seemed to start before or on the day the current one ended (35,255 before, 5,985 on the same day). That's impossible for two real stays, so the last line of the query removes these rows. We first tried ignoring all gaps under 2 days, but a chart of gap lengths showed these made-up dates can't tell duplicate bills from real readmissions, so we only remove the impossible ones.
-- **Last stays are kept:** A patient's final stay has no next stay, so its gap is blank. It stays in, because it still counts toward the total number of stays.
-- **Deaths:** Stays where the patient died before the stay ended are removed, and a "readmission" after a patient's death never counts.
+- **Duplicate bills:** Some stays were billed as several overlapping bills, so the "next stay" seemed to start before or on the day the current one ended (35,255 before, 5,985 on the same day). Two real stays can't do that, so the last line of the query removes these rows. I first tried ignoring all gaps under 2 days. A chart of gap lengths showed that these dates can't tell duplicate bills from real readmissions, so I only remove the impossible ones.
+- **Last stays stay in:** A patient's final stay has no next stay, so its gap is blank. It still counts toward the total number of stays.
+- **Deaths:** Stays where the patient died before the stay ended are removed. A "readmission" after a patient's death never counts.
 - **End of the data:** The data ends Dec 31, 2010. Stays ending after Dec 1, 2010 are removed, because there aren't 30 days left to see whether the patient came back.
 - **Cost:** $13,300 per readmission, from 2011 Medicare figures ($24.0 billion ÷ 1.8 million readmissions; [HCUP Statistical Brief #172](https://www.hcup-us.ahrq.gov/reports/statbriefs/sb172-Conditions-Readmissions-Payer.pdf)). The dataset's own `cost` table has no hospital-stay costs.
-- **Not used:** Provider and hospital IDs are random in this data (CMS manual, p. 15).
+- **Left out:** Provider and hospital IDs are random in this data (CMS manual, p. 15).
 
-**Result:** 1,281,691 hospital stays (after removing 41,240 duplicate-bill rows).
+**Result:** 1,281,691 hospital stays, after removing 41,240 duplicate-bill rows.
 
 ## Step 3: Calculate state rates in Google Sheets
 
 **Query:** [`03_connected_sheets_source.sql`](03_connected_sheets_source.sql)
 **Data scanned:** a few MB per refresh
 
-**Why:** State rates, the benchmark, and costs were calculated in a [Google Sheet connected to BigQuery](https://docs.google.com/spreadsheets/d/1XnLg82ePxkSuYE-KfKobFYNcuVbInf0kQ4ceUpW6lQA/edit?gid=738753992#gid=738753992), in Pivot Table 1, with one row per state:
+**Why:** I calculated state rates, the benchmark, and costs in a [Google Sheet connected to BigQuery](https://docs.google.com/spreadsheets/d/1XnLg82ePxkSuYE-KfKobFYNcuVbInf0kQ4ceUpW6lQA/edit?gid=738753992#gid=738753992), in Pivot Table 1, with one row per state:
 
 - Readmission rate: `AVERAGE` of `readmit_30` (the share of stays marked 1)
 - Number of stays: `COUNTA` of `readmit_30`
-- The row labeled "54" (8,964 stays) is left out. It isn't a state, and what it means still needs checking.
+- The row labeled "54" (8,964 stays) is left out. It isn't a state, and I still need to check what it means.
 
 **Result (Nov 12):**
 
 - All 50 states plus DC: 1,272,727 stays and 126,321 readmissions, or 9.93%. State rates range from 7.75% (Utah) to 10.59% (Mississippi).
-- Benchmark: 9.18%. [findings.md](../findings.md) explains how it was set.
-- Texas: 10.40% (9,055 readmissions out of 87,088 stays), about 1,057 readmissions above the benchmark, costing about $14.1 million.
+- Benchmark: 9.18%. [findings.md](../findings.md) explains how I set it.
+- Texas: 10.40% (9,055 readmissions out of 87,088 stays). That's about 1,057 readmissions above the benchmark, costing about $14.1 million.
 
 **Sheet formulas:**
 
@@ -71,7 +71,7 @@ What each query does, in the order the queries were run.
 - Extra readmissions = (Texas rate − benchmark) × Texas stays
 - Cost = extra readmissions × 13,300
 - Margin of error for the gap = `1.96 × SQRT(TX_rate × (1 − TX_rate) / TX_stays + benchmark × (1 − benchmark) / benchmark_stays)`
-- Result: gap of 1.21 points, 95% confidence interval 0.96 to 1.47 points
+- Result: a gap of 1.21 points, 95% confidence interval 0.96 to 1.47 points
 
 **Decision:** Use the 9.18% benchmark and focus on Texas.
 
@@ -80,9 +80,9 @@ What each query does, in the order the queries were run.
 ## Step 4: Build the table the model learns from
 
 **Query:** [`04_analysis_table.sql`](04_analysis_table.sql)
-**Data scanned:** about 365 MB before the condition count was added; recheck in the editor
+**Data scanned:** about 365 MB before the condition count was added
 
-**Why:** A model needs one row per stay with two things: the answer it should learn to predict (`readmit_30`) and *features*, the facts it uses to predict it. Features must be things known when the patient leaves the hospital. `stays_final` has the answer but no features, and some of its columns (like `days_to_next_admit`) give the answer away, so the model gets this new table instead.
+**Why:** A model needs one row per stay with two things: the Y it learns to predict (`readmit_30`) and the features (X's) it uses to predict it. Features must be things known when the patient leaves the hospital. `stays_final` has the Y but no features, and some of its columns (like `days_to_next_admit`) give the answer away. So the model gets this new table instead.
 
 **The features, and how the SQL builds each one:**
 
@@ -93,36 +93,35 @@ What each query does, in the order the queries were run.
 | `sex` | MALE or FEMALE | `person.gender_concept_id` joined to the `concept` table for the name |
 | `prior_stays` | How many hospital stays the patient had before this one (0 on a first stay) | `COUNT(*)` over the patient's stays in date order, counting only the ones before this row |
 | `days_since_last_stay` | Days between this admission and the patient's last discharge (blank on a first stay) | `LAG()` looks back one row to the previous stay's discharge date (the opposite of `LEAD()` in step 2) |
-| `stay_in_last_6mo` | Was the patient in the hospital in the 180 days before this admission? Always TRUE or FALSE; a first stay is FALSE | `days_since_last_stay <= 180`, wrapped in `IFNULL(..., FALSE)` because a blank compared with a number gives a blank, not FALSE |
+| `stay_in_last_6mo` | Was the patient in the hospital in the 180 days before this admission? Always TRUE or FALSE; a first stay is FALSE | `days_since_last_stay <= 180`, wrapped in `IFNULL(..., FALSE)`, because comparing a blank with a number gives a blank |
 | `conditions_last_year` | How many different diagnoses the patient had in the year before admission; a simple measure of how sick they are | Counts distinct `condition_concept_id` codes dated 1 to 365 days before admission; 0 if none |
-| `is_training` | TRUE for about 80% of patients: the ones the model learns from. The other 20% test it. | `FARM_FINGERPRINT(person_id)` turns each patient ID into a fixed number; keeping 8 of 10 final digits gives 80%. All of a patient's stays land on the same side, and every rerun gives the same split. |
+| `is_training` | TRUE for about 80% of patients, the ones the model learns from. The other 20% test it. | `FARM_FINGERPRINT(person_id)` turns each patient ID into a fixed number. Keeping 8 of 10 final digits gives 80%. All of a patient's stays land on the same side, and every rerun gives the same split. |
 
-The table also keeps `person_id`, `visit_occurrence_id`, the stay dates, and `state`. These are not features.
+The table also keeps `person_id`, `visit_occurrence_id`, the stay dates, and `state`. These are labels for each row, so the model doesn't use them.
 
-**Result:** 1,281,691 rows, the same as `stays_final`, so no stays were duplicated.
+**Result:** 1,281,691 rows, the same as `stays_final`. No stays were duplicated.
 
 ## Step 5: Train the model
 
 **Query:** [`05_train_model.sql`](05_train_model.sql)
 
-**Why:** A *logistic regression* learns from past stays and gives each stay a probability of readmission. The plan is in [model/model_card.md](../model/model_card.md).
+**Why:** A *logistic regression* learns from past stays and gives each stay a chance of readmission. More in [model/model_card.md](../model/model_card.md).
 
 **Choices in the query:**
 
-- Learns only from training patients (`WHERE is_training`), so the test patients stay unseen.
-- Uses six features: `age`, `sex`, `los`, `prior_stays`, `stay_in_last_6mo`, `conditions_last_year`. State is left out on purpose so it can be used for the Texas check later.
-- Uses `stay_in_last_6mo` instead of `days_since_last_stay`. BigQuery fills blank numbers with the average, which would wrongly give first-time patients an "average" gap. The TRUE/FALSE version has no blanks.
-- `enable_global_explain = TRUE` lets us rank the features afterward.
+- It learns only from training patients (`WHERE is_training`), so the test patients stay unseen.
+- It uses six features: `age`, `sex`, `los`, `prior_stays`, `stay_in_last_6mo`, and `conditions_last_year`. I left state out on purpose, so I can use it for the Texas check later.
+- It uses `stay_in_last_6mo` in place of `days_since_last_stay`. BigQuery fills blank numbers with the average, which would give first-time patients a made-up "average" gap. The TRUE/FALSE version has no blanks.
+- `calculate_p_values = TRUE` and `category_encoding_method = 'DUMMY_ENCODING'` turn on p-values, so I can read each feature the way the textbook reads its coefficient tables.
+- `max_iterations = 50` and `early_stop = FALSE` let the model finish fitting. By default, BigQuery can stop after a few rounds, before the coefficients settle. That happened here first: the early-stopped model gave sex and conditions in the past year the opposite sign, and ranked prior stays first.
 
 ## Step 6: Test the model
 
 **Query:** [`06_evaluate_model.sql`](06_evaluate_model.sql) (two queries; run them one at a time)
 
-**Why:** To find out whether the model is any good and which features it relied on. The report card uses only the test patients.
+**Why:** To find out whether the model is any good, and which features have a real link to readmission. The report card uses only the test patients.
 
 | Query | What it answers | Result |
 |---|---|---|
-| `ML.EVALUATE` | Is the model any good? | Score (`roc_auc`) of 0.548: weak, barely better than a coin flip (0.5). Its 90% accuracy is misleading, because always guessing "no readmission" also scores 90%. |
-| `ML.GLOBAL_EXPLAIN` | Which features did the model rely on most? | Prior stays, by far. Age least. |
-
-**Next:** Compare the model with a simple rule (the to-do in [model/model_card.md](../model/model_card.md)).
+| `ML.EVALUATE` | Is the model any good? | roc_auc of 0.558, close to 0.5 (no better than chance). Accuracy is 0.901, the same as the null classifier, which always guesses "no readmission." |
+| `ML.ADVANCED_WEIGHTS` | Which features have a real link, and in which direction? | A stay in the last 6 months and length of stay have the strongest real links, and both push readmission up. Every feature has a real link at the 0.05 cutoff; age only just (p = 0.041). Full table in [model/model_card.md](../model/model_card.md). |

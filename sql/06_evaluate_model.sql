@@ -8,6 +8,6 @@ FROM ML.EVALUATE(
    FROM `cloud-services-example.readmissions.analysis_table`
    WHERE NOT is_training));
 
--- Driver ranking: which features the model relied on most
+-- Drivers: each feature's coefficient (direction) and p-value (real or chance)
 SELECT *
-FROM ML.GLOBAL_EXPLAIN(MODEL `cloud-services-example.readmissions.readmit_model`);
+FROM ML.ADVANCED_WEIGHTS(MODEL `cloud-services-example.readmissions.readmit_model`);

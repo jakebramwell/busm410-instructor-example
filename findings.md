@@ -33,7 +33,7 @@ The $13,300 cost per readmission comes from 2011 Medicare hospital-cost totals (
 
 ## The model
 
-We built a prediction model that scores each hospital stay's chance of a readmission. So far it's weak: its score was 0.548, barely better than a coin flip (0.5). It relied most on how many times the patient had been in the hospital before, and barely used age. Details are in [model/model_card.md](model/model_card.md).
+We built a model that gives each hospital stay a chance of readmission. It isn't ready for prediction: its roc_auc is 0.558, close to 0.5 (no better than chance), and it doesn't beat the null classifier. It is useful for inference: a hospital stay in the last 6 months and length of stay have the strongest real links to readmission. Details are in [model/model_card.md](model/model_card.md).
 
 ## What's next
 

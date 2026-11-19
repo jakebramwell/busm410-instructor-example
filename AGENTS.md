@@ -40,7 +40,7 @@ My instructions to you, the AI agents I work with on this project: the BUSM 410 
 ## Project facts
 
 - **Data:** `bigquery-public-data.cms_synthetic_patient_data_omop`, synthetic Medicare records. The CMS guide is [Other/metadata.pdf](Other/metadata.pdf).
-- **Status:** State rates and the Texas gap are done. The model is built and tested (roc_auc 0.548, weak). No recommendation yet; see To-do.
+- **Status:** State rates and the Texas gap are done. The model is built and tested (roc_auc 0.558, weak at prediction; coefficients and p-values in model/model_card.md). No recommendation yet; see To-do.
 - **Hospital rows:** `condition_occurrence.condition_type_concept_id = 38000200`.
 - **No `visit_occurrence` table.** Several diagnosis rows can belong to one stay, so group `condition_occurrence` by `(person_id, visit_occurrence_id)` to count each stay once.
 - **No true admission or discharge dates.** The original CMS files had them (`CLM_ADMSN_DT`, `NCH_BENE_DSCHRG_DT`), but the BigQuery version dropped them. `condition_start_date` and `condition_end_date` are the bill's start and end dates, used instead.
