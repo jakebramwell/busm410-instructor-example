@@ -31,6 +31,15 @@ Requiring 10% of all stays keeps a few small states with lucky numbers from sett
 
 The $13,300 cost per readmission comes from 2011 Medicare hospital-cost totals ([HCUP Statistical Brief #172, Table 1](https://www.ncbi.nlm.nih.gov/books/NBK206781/table/sb172.t1/)).
 
+## Checking the data
+
+The data has no blanks and no impossible values. Two things to know:
+
+- **Readmission rates fall by about half each year, in every state** (about 15% in 2008, 8% in 2009, 4% in 2010). I don't know why. It may come from how CMS built the synthetic data.
+- **Most of the Texas gap is in 2008.** Comparing within each year, Texas is 0.73 points above everyone else in 2008, but only 0.18 in 2009 and 0.10 in 2010.
+
+Details are in [sql/README.md](sql/README.md), step 4b.
+
 ## The model
 
 We built a model that gives each hospital stay a chance of readmission. It isn't ready for prediction: its roc_auc is 0.558, close to 0.5 (no better than chance), and it doesn't beat the null classifier. It is useful for inference: a hospital stay in the last 6 months and length of stay have the strongest real links to readmission. Details are in [model/model_card.md](model/model_card.md).

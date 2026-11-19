@@ -101,6 +101,19 @@ The table also keeps `person_id`, `visit_occurrence_id`, the stay dates, and `st
 
 **Result:** 1,281,691 rows, the same as `stays_final`. No stays were duplicated.
 
+## Step 4b: Check and explore the data
+
+**Query:** [`04b_explore_data.sql`](04b_explore_data.sql)
+
+**Why:** Before the model compares all the features at once, I look at the data and at each feature one at a time.
+
+**What I found:**
+
+| Query | Question | Result |
+|---|---|---|
+| 1 | Any blanks or impossible values? | No blanks. Ages run 24 to 101 (Medicare also covers some people under 65). Stays run 0 to 35 days. One patient has 287 different diagnoses in a year: extreme, but possible in billing data, so I left it. 288 stays start in late 2007, before the data's 2008–2010 window; too few to matter. |
+| 2 | Is the Texas gap the same every year? | Readmission rates fall by about half each year in every state (about 15% in 2008, 8% in 2009, 4% in 2010). I don't know why; it may come from how CMS built the synthetic data. Within each year, Texas is 0.73 points above everyone else in 2008, but only 0.18 in 2009 and 0.10 in 2010. |
+
 ## Step 5: Train the model
 
 **Query:** [`05_train_model.sql`](05_train_model.sql)
