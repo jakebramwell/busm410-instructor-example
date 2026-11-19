@@ -55,7 +55,7 @@ Details are in [sql/README.md](sql/README.md), step 4b.
 
 Next, I wanted to see what the model says about those two features once other features are included too. The model uses six: the two above plus age, sex, prior stays, and conditions in the past year.
 
-It isn't ready for prediction: its roc_auc is 0.558, close to 0.5 (no better than chance), and it doesn't beat the null classifier. It is useful for inference. Holding the other features steady, a hospital stay in the last 6 months and length of stay both still push readmission up, so the model agrees with the descriptive analysis. Those two also have the strongest real links to readmission of the six features. Details are in [model/model_card.md](model/model_card.md).
+It isn't ready for prediction: its roc_auc is 0.558, close to 0.5 (no better than chance), and it doesn't beat the null classifier (accuracy of 0.901 for both). It is useful for inference. Holding the other features steady, a hospital stay in the last 6 months and length of stay both still push readmission up, so the model agrees with the descriptive analysis. Those two also have the strongest real links to readmission of the six features. Details are in [model/model_card.md](model/model_card.md).
 
 ## What's next
 
