@@ -105,7 +105,7 @@ The table also keeps `person_id`, `visit_occurrence_id`, the stay dates, and `st
 
 **Query:** [`04b_explore_data.sql`](04b_explore_data.sql)
 
-**Why:** Before the model compares all the features at once, I check the data and look at the two strongest features one at a time.
+**Why:** Before building the model, I check the data and pick two features to look at one at a time.
 
 **What I found:**
 

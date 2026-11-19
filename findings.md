@@ -40,7 +40,7 @@ The data has no blanks and no impossible values. Two things to know:
 
 ## One feature at a time
 
-Before the model, I looked at the two features the model later found strongest, one at a time.
+Before building the model, I picked two features and looked at each one on its own (a descriptive analysis).
 
 ![Readmission by stay in the last 6 months](visuals/readmission_by_stay_in_last_6mo.png)
 
@@ -49,13 +49,13 @@ Before the model, I looked at the two features the model later found strongest, 
 - **A hospital stay in the last 6 months:** 12.57% of these stays were followed by a readmission, vs. 8.78% for the rest.
 - **Length of stay:** readmissions rise slowly with longer stays, from 9.2% at 2 days to 11.0% at 10 days.
 
-The model agrees: holding the other features steady, both still push readmission up.
-
 Details are in [sql/README.md](sql/README.md), step 4b.
 
 ## The model
 
-We built a model that gives each hospital stay a chance of readmission. It isn't ready for prediction: its roc_auc is 0.558, close to 0.5 (no better than chance), and it doesn't beat the null classifier. It is useful for inference: a hospital stay in the last 6 months and length of stay have the strongest real links to readmission. Details are in [model/model_card.md](model/model_card.md).
+Next, I wanted to see what the model says about those two features once other features are included too. The model uses six: the two above plus age, sex, prior stays, and conditions in the past year.
+
+It isn't ready for prediction: its roc_auc is 0.558, close to 0.5 (no better than chance), and it doesn't beat the null classifier. It is useful for inference. Holding the other features steady, a hospital stay in the last 6 months and length of stay both still push readmission up, so the model agrees with the descriptive analysis. Those two also have the strongest real links to readmission of the six features. Details are in [model/model_card.md](model/model_card.md).
 
 ## What's next
 
