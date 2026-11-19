@@ -105,7 +105,7 @@ The table also keeps `person_id`, `visit_occurrence_id`, the stay dates, and `st
 
 **Query:** [`04b_explore_data.sql`](04b_explore_data.sql)
 
-**Why:** Before the model compares all the features at once, I look at the data and at each feature one at a time.
+**Why:** Before the model compares all the features at once, I check the data and look at the two strongest features one at a time.
 
 **What I found:**
 
@@ -113,6 +113,8 @@ The table also keeps `person_id`, `visit_occurrence_id`, the stay dates, and `st
 |---|---|---|
 | 1 | Any blanks or impossible values? | No blanks. Ages run 24 to 101 (Medicare also covers some people under 65). Stays run 0 to 35 days. One patient has 287 different diagnoses in a year: extreme, but possible in billing data, so I left it. 288 stays start in late 2007, before the data's 2008–2010 window; too few to matter. |
 | 2 | Is the Texas gap the same every year? | Readmission rates fall by about half each year in every state (about 15% in 2008, 8% in 2009, 4% in 2010). I don't know why; it may come from how CMS built the synthetic data. Within each year, Texas is 0.73 points above everyone else in 2008, but only 0.18 in 2009 and 0.10 in 2010. |
+| 3 | Are stays readmitted more often after a hospital stay in the last 6 months? | Yes: 12.57% with a stay in the last 6 months, 8.78% without. Chart: [visuals/readmission_by_stay_in_last_6mo.png](../visuals/readmission_by_stay_in_last_6mo.png) |
+| 4 | Are longer stays readmitted more often? | Yes, slowly: 9.2% at 2 days, 11.0% at 10 days. Past 20 days there are few stays, so the rates bounce around. No stay is longer than 35 days, and 8,642 stays are exactly 35 days; I don't know why. Chart: [visuals/readmission_by_length_of_stay.png](../visuals/readmission_by_length_of_stay.png) |
 
 ## Step 5: Train the model
 

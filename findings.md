@@ -38,6 +38,19 @@ The data has no blanks and no impossible values. Two things to know:
 - **Readmission rates fall by about half each year, in every state** (about 15% in 2008, 8% in 2009, 4% in 2010). I don't know why. It may come from how CMS built the synthetic data.
 - **Most of the Texas gap is in 2008.** Comparing within each year, Texas is 0.73 points above everyone else in 2008, but only 0.18 in 2009 and 0.10 in 2010.
 
+## One feature at a time
+
+Before the model, I looked at the two features the model later found strongest, one at a time.
+
+![Readmission by stay in the last 6 months](visuals/readmission_by_stay_in_last_6mo.png)
+
+![Readmission by length of stay](visuals/readmission_by_length_of_stay.png)
+
+- **A hospital stay in the last 6 months:** 12.57% of these stays were followed by a readmission, vs. 8.78% for the rest.
+- **Length of stay:** readmissions rise slowly with longer stays, from 9.2% at 2 days to 11.0% at 10 days.
+
+The model agrees: holding the other features steady, both still push readmission up.
+
 Details are in [sql/README.md](sql/README.md), step 4b.
 
 ## The model
