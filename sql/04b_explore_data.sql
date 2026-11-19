@@ -28,34 +28,19 @@ FROM `cloud-services-example.readmissions.analysis_table`
 GROUP BY year
 ORDER BY year;
 
--- 3. Readmission rate for each feature, one at a time.
---    Yes/no and text features: one row per value.
---    Number features: four equal-size buckets, lowest to highest.
-WITH buckets AS (
-  SELECT
-    *,
-    NTILE(4) OVER (ORDER BY age) AS age_bucket,
-    NTILE(4) OVER (ORDER BY los) AS los_bucket,
-    NTILE(4) OVER (ORDER BY prior_stays) AS prior_bucket,
-    NTILE(4) OVER (ORDER BY conditions_last_year) AS cond_bucket
-  FROM `cloud-services-example.readmissions.analysis_table`
-)
-SELECT 'stay_in_last_6mo' AS feature, CAST(stay_in_last_6mo AS STRING) AS value_range,
-       COUNT(*) AS stays, ROUND(100 * AVG(readmit_30), 2) AS readmit_rate
-FROM buckets GROUP BY 2
-UNION ALL
-SELECT 'sex', sex, COUNT(*), ROUND(100 * AVG(readmit_30), 2)
-FROM buckets GROUP BY 2
-UNION ALL
-SELECT 'age', FORMAT('%d. %d to %d', age_bucket, MIN(age), MAX(age)), COUNT(*), ROUND(100 * AVG(readmit_30), 2)
-FROM buckets GROUP BY age_bucket
-UNION ALL
-SELECT 'los', FORMAT('%d. %d to %d', los_bucket, MIN(los), MAX(los)), COUNT(*), ROUND(100 * AVG(readmit_30), 2)
-FROM buckets GROUP BY los_bucket
-UNION ALL
-SELECT 'prior_stays', FORMAT('%d. %d to %d', prior_bucket, MIN(prior_stays), MAX(prior_stays)), COUNT(*), ROUND(100 * AVG(readmit_30), 2)
-FROM buckets GROUP BY prior_bucket
-UNION ALL
-SELECT 'conditions_last_year', FORMAT('%d. %d to %d', cond_bucket, MIN(conditions_last_year), MAX(conditions_last_year)), COUNT(*), ROUND(100 * AVG(readmit_30), 2)
-FROM buckets GROUP BY cond_bucket
-ORDER BY feature, value_range;
+-- 3. Readmission rate for a yes/no feature: stay in the last 6 months.
+SELECT
+  stay_in_last_6mo,
+  COUNT(*) AS stays,
+  ROUND(100 * AVG(readmit_30), 2) AS readmit_rate
+FROM `cloud-services-example.readmissions.analysis_table`
+GROUP BY stay_in_last_6mo;
+
+-- 4. Readmission rate for a number feature: length of stay, one row per number of days.
+SELECT
+  los AS days_in_hospital,
+  COUNT(*) AS stays,
+  ROUND(100 * AVG(readmit_30), 2) AS readmit_rate
+FROM `cloud-services-example.readmissions.analysis_table`
+GROUP BY los
+ORDER BY los;
