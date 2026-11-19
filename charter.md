@@ -17,8 +17,8 @@ A care-management leader deciding which patients to call after they leave the ho
 ## What success looks like
 
 - Every number can be traced back to a saved query or calculation.
-- One prediction model, tested on patients it never saw, and compared with a simple rule.
-- A recommendation that follows the evidence, even if that means using the simple rule instead of the model.
+- One prediction model, tested on patients it never saw, and compared with the null classifier (always guessing "no readmission").
+- A recommendation that follows the evidence, even if that means not using the model.
 - An audit log showing real checks I made of the AI agent's work.
 - Students can repeat the work for free in BigQuery's free tier.
 

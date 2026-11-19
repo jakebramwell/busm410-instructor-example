@@ -53,5 +53,4 @@ My instructions to you, the AI agents I work with on this project: the BUSM 410 
 
 ## To-do
 
-- [ ] Compare the model with the simple rule (call everyone hospitalized in the last 6 months) on the test patients. Walk me through the approach before we write the query.
 - [ ] Test whether Texas's patient mix explains its gap: use the model (trained without state) to add up the readmissions it expects for Texas stays, and compare with the 9,055 that happened. Walk me through this approach before we use it.

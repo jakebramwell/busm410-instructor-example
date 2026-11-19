@@ -13,7 +13,7 @@ This is a worked example of the BUSM 410 semester project. I used public data in
 
 - **The problem:** A *readmission* is when a patient leaves the hospital and has to come back within 30 days. Hospital stays by Texas residents led to a readmission **10.40%** of the time. The best-performing states averaged **9.18%**.
 - **How big it is:** That gap adds up to about **1,057 extra readmissions** over three years, or about **$14.1 million** in hospital costs at $13,300 each.
-- **What's in progress:** We built a prediction model to help a care team decide which patients to call after they leave the hospital. It's weak so far. Next, we'll test whether it beats a simple rule: call everyone who was in the hospital in the last 6 months.
+- **What's in progress:** We built a prediction model to help a care team decide which patients to call after they leave the hospital. It isn't ready for prediction yet, because it doesn't beat the null classifier (always guessing "no readmission"). But it shows which features have a real link to readmission.
 
 ## Files
 

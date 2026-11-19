@@ -59,7 +59,6 @@ It isn't ready for prediction: its roc_auc is 0.558, close to 0.5 (no better tha
 
 ## What's next
 
-- **Compare the model with a simple rule:** call everyone who was in the hospital in the last 6 months. If the model doesn't do better, the rule is the better choice, since it needs no model.
 - **Check whether Texas's gap comes from its patients being sicker** (its *patient mix*), by comparing the readmissions the model expects for Texas patients with the 9,055 that actually happened.
 - Proving that follow-up calls reduce readmissions would need a separate test.
 
